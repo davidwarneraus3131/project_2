@@ -1,0 +1,214 @@
+<?php
+
+if (! defined('WP_DEBUG')) {
+	die( 'Direct access forbidden.' );
+}
+
+add_action( 'wp_enqueue_scripts', function () {
+	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+});
+
+
+
+// Remove Woocommerce checkour fields 
+
+add_filter('woocommerce_checkout_fields', 'remove_unnecessary_checkout_fields', 20);
+function remove_unnecessary_checkout_fields($fields) {
+    // Unset all billing fields
+    unset($fields['billing']['billing_first_name']); 
+    unset($fields['billing']['billing_last_name']);
+    unset($fields['billing']['billing_company']);
+    unset($fields['billing']['billing_address_1']);
+    unset($fields['billing']['billing_address_2']);
+    unset($fields['billing']['billing_city']);
+    unset($fields['billing']['billing_postcode']);
+    unset($fields['billing']['billing_state']);
+    unset($fields['billing']['billing_country']);
+    unset($fields['billing']['billing_email']);
+    unset($fields['billing']['billing_phone']);
+	 unset($fields['order']['order_comments']);
+
+    return $fields;
+}
+
+
+
+// add new  customers add organization field 
+
+// Add "Organization" field to user profile and user creation pages
+function add_organization_field_to_user_profile($user) {
+    // Check if we're editing an existing user
+    $organization = get_user_meta($user->ID, 'organization', true);
+    ?>
+    <h3><?php _e('Organization Information', 'your-textdomain'); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="organization"><?php _e('Organization', 'your-textdomain'); ?></label></th>
+            <td>
+                <input type="text" name="organization" id="organization" value="<?php echo esc_attr($organization); ?>" class="regular-text" />
+                <p class="description"><?php _e('Enter the user\'s organization.', 'your-textdomain'); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+add_action('show_user_profile', 'add_organization_field_to_user_profile');
+add_action('edit_user_profile', 'add_organization_field_to_user_profile');
+
+// Add "Organization" field to the new user creation form
+function add_organization_field_to_new_user($user) {
+    ?>
+    <h3><?php _e('Organization Information', 'your-textdomain'); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="organization"><?php _e('Organization', 'your-textdomain'); ?></label></th>
+            <td>
+                <input type="text" name="organization" id="organization" value="" class="regular-text" />
+                <p class="description"><?php _e('Enter the user\'s organization.', 'your-textdomain'); ?></p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+add_action('user_new_form', 'add_organization_field_to_new_user');
+
+// Save the "Organization" field value
+function save_organization_field($user_id) {
+    if (isset($_POST['organization'])) {
+        update_user_meta($user_id, 'organization', sanitize_text_field($_POST['organization']));
+    }
+}
+add_action('personal_options_update', 'save_organization_field');
+add_action('edit_user_profile_update', 'save_organization_field');
+add_action('user_register', 'save_organization_field');
+
+
+
+
+
+
+// users login show  products list based on organization 
+
+add_filter('foodstore_shortcode_args', 'filter_foodstore_products_by_organization');
+function filter_foodstore_products_by_organization($args) {
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        $organization = get_user_meta($user_id, 'organization', true);
+
+        if (!empty($organization)) {
+            // Map organization to product categories
+            $categories = array();
+            if ($organization === 'dlf') {
+                $categories = array('casual');
+            } elseif ($organization === 'bata') {
+                $categories = array('travel');
+            }
+
+            if (!empty($categories)) {
+                $args['tax_query'][] = array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $categories,
+                    'operator' => 'IN',
+                );
+            }
+        }
+    }
+    return $args;
+}
+
+
+
+
+
+
+
+
+
+
+
+//  woocommerce orders page add  column organization
+// Add "Organization" column to WooCommerce Orders page
+add_filter('manage_woocommerce_page_wc-orders_columns', 'add_organization_column_to_orders');
+function add_organization_column_to_orders($columns) {
+    $new_columns = array();
+
+    // Add new column after "Order Status"
+    foreach ($columns as $key => $column) {
+        $new_columns[$key] = $column;
+
+        if ('order_status' === $key) {
+            $new_columns['organization'] = __('Organization', 'theme_domain');
+        }
+    }
+
+    return $new_columns;
+}
+
+// Display the "Organization" data in the custom column
+add_action('manage_woocommerce_page_wc-orders_custom_column', 'display_organization_column_content', 10, 2);
+function display_organization_column_content($column, $order_id) {
+    if ('organization' === $column) {
+        // Get the WooCommerce order object
+        $order = wc_get_order($order_id);
+
+        if ($order) {
+            // Get the user ID associated with the order
+            $user_id = $order->get_user_id();
+
+            if ($user_id) {
+                // Retrieve the "organization" field from user meta
+                $organization = get_user_meta($user_id, 'organization', true);
+
+                // If organization exists, display it
+                if (!empty($organization)) {
+                    echo esc_html($organization);
+                } else {
+                    echo '<small>(<em>No organization</em>)</small>';
+                }
+            } else {
+                echo '<small>(<em>Guest</em>)</small>'; // For guest orders
+            }
+        } else {
+            echo '<small>(<em>Invalid order</em>)</small>';
+        }
+    }
+}
+
+// Add custom styles for the "Organization" column
+add_action('admin_head', 'custom_organization_column_styles');
+function custom_organization_column_styles() {
+    echo '<style>
+        .column-organization {
+            width: 12%;
+        }
+    </style>';
+}
+
+
+
+// Hide categories for non-logged-in users
+function hide_categories_for_guests( $query ) {
+    if ( ! is_user_logged_in() && is_tax( 'product_cat' ) ) {
+        // Redirect to home page if not logged in
+        wp_redirect( home_url() );
+        exit;
+    }
+}
+add_action( 'pre_get_posts', 'hide_categories_for_guests' );
+
+// Hide products for non-logged-in users
+function hide_products_for_guests() {
+    if ( ! is_user_logged_in() && is_shop() ) {
+        wp_redirect( home_url() );  // Redirect to home page
+        exit;
+    }
+    if ( ! is_user_logged_in() && is_product() ) {
+        wp_redirect( home_url() );  // Redirect to home page for single product
+        exit;
+    }
+}
+add_action( 'template_redirect', 'hide_products_for_guests' );
+
+
+
