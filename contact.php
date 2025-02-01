@@ -1,4 +1,25 @@
-<?php include './includes/header.php'; ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php 
+include './includes/header.php'; 
+
+
+if (isset($_SESSION['status']) && isset($_SESSION['message'])) {
+    $status = $_SESSION['status'];
+    $message = $_SESSION['message'];
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script>
+        Swal.fire({
+            icon: '$status',
+            title: '$message',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>";
+    unset($_SESSION['status']);
+    unset($_SESSION['message']);
+}
+?>
 
 
         <!--Page Title-->
@@ -7,7 +28,7 @@
                 <div class="content-box clearfix">
                     <h1>Contact Us</h1>
                     <ul class="bread-crumb clearfix">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.php">Home</a></li>
                         <li>Contact Us</li>
                     </ul>
                 </div>

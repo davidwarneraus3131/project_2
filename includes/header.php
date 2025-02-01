@@ -155,71 +155,14 @@
                                         </li>
                                          
                                         <li class=""><a href="property-list.php"><span>Property</span></a>
-                                            <!-- <ul>
-                                                <li><a href="property-list.php">Property List</a></li>
-
-                                                <li><a href="property-details.php">Property Details</a></li>
                                             
-                                            </ul> -->
                                         </li>
-                                        <!-- <li class="current dropdown"><a href="index.php"><span>Pages</span></a>
-                                            <div class="megamenu">
-                                                <div class="row clearfix">
-                                                    <div class="col-xl-4 column">
-                                                        <ul>
-                                                            <li><h4>Pages</h4></li>
-                                                            <li><a href="about.php">About Us</a></li>
-                                                            <li><a href="services.php">Our Services</a></li>
-                                                            <li><a href="faq.php">Faq's Page</a></li>
-                                                            <li><a href="pricing.php">Pricing Table</a></li>
-                                                            <li><a href="compare-roperties.php">Compare Properties</a></li>
-                                                            <li><a href="categories.php">Categories Page</a></li>
-                                                            <li><a href="career.php">Career Opportunity</a></li>
-                                                            <li><a href="testimonials.php">Testimonials</a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-xl-4 column">
-                                                        <ul>
-                                                            <li><h4>Pages</h4></li>
-                                                            <li><a href="gallery.php">Our Gallery</a></li>
-                                                            <li><a href="profile.php">My Profile</a></li>
-                                                            <li><a href="signin.php">Sign In</a></li>
-                                                            <li><a href="signup.php">Sign Up</a></li>
-                                                            <li><a href="error.php">404</a></li>
-                                                            <li><a href="agents-list.php">Agents List</a></li>
-                                                            <li><a href="agents-grid.php">Agents Grid</a></li>
-                                                            <li><a href="agents-details.php">Agent Details</a></li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="col-xl-4 column">
-                                                        <ul>
-                                                            <li><h4>Pages</h4></li>
-                                                            <li><a href="blog-1.php">Blog 01</a></li>
-                                                            <li><a href="blog-2.php">Blog 02</a></li>
-                                                            <li><a href="blog-3.php">Blog 03</a></li>
-                                                            <li><a href="blog-details.php">Blog Details</a></li>
-                                                            <li><a href="agency-list.php">Agency List</a></li>
-                                                            <li><a href="agency-grid.php">Agency Grid</a></li>
-                                                            <li><a href="agency-details.php">Agency Details</a></li>
-                                                            <li><a href="contact.php">Contact Us</a></li>
-                                                        </ul>
-                                                    </div>                                   
-                                                </div>                                        
-                                            </div>
-                                        </li>  -->
-                                        <li class="dropdown"><a href="index.php"><span>Agency</span></a>
-                                            <ul>
-                                                <li><a href="agency-list.php">Agency List</a></li>
-                                                
-                                                <li><a href="agency-details.php">Agency Details</a></li>
-                                            </ul>
+                                        
+                                        <li class=""><a href="agency-list.php"><span>Agency</span></a>
+                                            
                                         </li>
-                                        <li class="dropdown"><a href="blog.php"><span>Blog</span></a>
-                                            <ul>
-                                              
- 
-                                                <li><a href="blog-details.php">Blog Details</a></li>
-                                            </ul>
+                                        <li class=""><a href="blog.php"><span>Blog</span></a>
+                                            
                                         </li>  
                                         <li><a href="contact.php"><span>Contact</span></a></li>   
                                     </ul>
