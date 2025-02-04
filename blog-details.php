@@ -1,5 +1,18 @@
-<?php include './includes/header.php'; ?>
+<?php include './includes/header.php';
+include("./database/db.php");
+?>
+<!-- tags  add admin panel
+<label for="tags">Tags (comma-separated):</label>
+<input type="text" name="tags" id="tags" placeholder="e.g., Real Estate, Interior, Rent Home">
+And update your PHP insert script:
 
+php
+Copy
+Edit
+$tags = mysqli_real_escape_string($conn, $_POST['tags']);
+$query = "INSERT INTO blogs (title, category, image, author, author_image, publish_date, content, featured, tags) 
+          VALUES ('$title', '$category', '$image', '$author', '$author_image', '$publish_date', '$content', '$featured', '$tags')";
+mysqli_query($conn, $query); -->
 
         <!--Page Title-->
         <section class="page-title centred" style="background-image: url(assets/images/background/page-title-5.jpg);">
@@ -7,7 +20,7 @@
                 <div class="content-box clearfix">
                     <h1>Blog Details</h1>
                     <ul class="bread-crumb clearfix">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.php">Home</a></li>
                         <li>Blog Details</li>
                     </ul>
                 </div>
@@ -22,97 +35,154 @@
                 <div class="row clearfix">
                     <div class="col-lg-8 col-md-12 col-sm-12 content-side">
                         <div class="blog-details-content">
-                            <div class="news-block-one">
-                                <div class="inner-box">
-                                    <div class="image-box">
-                                        <figure class="image"><img src="assets/images/news/news-21.jpg" alt=""></figure>
-                                        <span class="category">Featured</span>
-                                    </div>
-                                    <div class="lower-content">
-                                        <h3>Including Animation In Your Design System.</h3>
-                                        <ul class="post-info clearfix">
-                                            <li class="author-box">
-                                                <figure class="author-thumb"><img src="assets/images/news/author-1.jpg" alt=""></figure>
-                                                <h5><a href="blog-details.html">Eva Green</a></h5>
-                                            </li>
-                                            <li>April 10, 2020</li>
-                                        </ul>
-                                        <div class="text">
-                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing sed do eiusmod tempor incididunt labore dolore magna aliqua enim minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
-                                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed perspiciatis unde omnis iste natus error sit voluptem accusantium doloremque laudantium.</p>
-                                            <blockquote>
-                                                <h4>“Enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis.”</h4>
-                                            </blockquote>
-                                            <p>Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed perspiciatis unde omnis iste natus error sit voluptem accusantium doloremque laudantium totam rem aperiam.</p>
-                                        </div>
-                                        <div class="post-tags">
-                                            <ul class="tags-list clearfix">
-                                                <li><h5>Tags:</h5></li>
-                                                <li><a href="blog-details.html">Real Estate</a></li>
-                                                <li><a href="blog-details.html">Interior</a></li>
-                                                <li><a href="blog-details.html">Rent Home</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="comments-area">
-                                <div class="group-title">
-                                    <h4>3 Comments</h4>
-                                </div>
-                                <div class="comment-box">
-                                    <div class="comment">
-                                        <figure class="thumb-box">
-                                            <img src="assets/images/news/comment-1.jpg" alt="">
-                                        </figure>
-                                        <div class="comment-inner">
-                                            <div class="comment-info clearfix">
-                                                <h5>Rebeka Dawson</h5>
-                                                <span>April 10, 2020</span>
-                                            </div>
-                                            <div class="text">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nos trud exerc.</p>
-                                                <a href="blog-details.html"><i class="fas fa-share"></i>Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="comment replay-comment">
-                                        <figure class="thumb-box">
-                                            <img src="assets/images/news/comment-2.jpg" alt="">
-                                        </figure>
-                                        <div class="comment-inner">
-                                            <div class="comment-info clearfix">
-                                                <h5>Elizabeth Winstead</h5>
-                                                <span>April 10, 2020</span>
-                                            </div>
-                                            <div class="text">
-                                                <p>Lorem ipsum dolor sit amet, consectur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nos</p>
-                                                <a href="blog-details.html"><i class="fas fa-share"></i>Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="comment">
-                                        <figure class="thumb-box">
-                                            <img src="assets/images/news/comment-3.jpg" alt="">
-                                        </figure>
-                                        <div class="comment-inner">
-                                            <div class="comment-info clearfix">
-                                                <h5>Benedict Cumbatch</h5>
-                                                <span>April 10, 2020</span>
-                                            </div>
-                                            <div class="text">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nos trud exerc.</p>
-                                                <a href="blog-details.html"><i class="fas fa-share"></i>Reply</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+
+                        <?php
+
+
+// Get blog ID from URL
+$blog_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($blog_id > 0) {
+    // Fetch blog details
+    $query = "SELECT `title`, `category`, `image`, `author`, `author_image`, `publish_date`, `short_description`, `featured`, `tags`
+              FROM `blogs` WHERE `id` = $blog_id";
+    $result = mysqli_query($conn, $query);
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $title = $row['title'];
+        $category = $row['category'];
+        $image = $row['image'];
+        $author = $row['author'];
+        $author_image = $row['author_image'];
+        $publish_date = date("F d, Y", strtotime($row['publish_date']));
+        $content = $row['short_description'];
+        $featured = $row['featured'];
+        $tags = explode(',', $row['tags']); // Convert tags to an array
+    } else {
+        echo "<p>Blog not found.</p>";
+        exit;
+    }
+} else {
+    echo "<p>Invalid blog ID.</p>";
+    exit;
+}
+?>
+
+
+<div class="news-block-one">
+    <div class="inner-box">
+        <div class="image-box">
+            <figure class="image"><img src="assets/images/blogs/<?php echo $image; ?>" alt=""></figure>
+            <?php if ($featured == 1): ?>
+                <span class="category">Featured</span>
+            <?php endif; ?>
+        </div>
+        <div class="lower-content">
+            <h3><?php echo htmlspecialchars($title); ?></h3>
+            <ul class="post-info clearfix">
+                <li class="author-box">
+                    <figure class="author-thumb"><img src="assets/images/agents/<?php echo $author_image; ?>" alt=""></figure>
+                    <h5><a href="blog-details.php"><?php echo htmlspecialchars($author); ?></a></h5>
+                </li>
+                <li><?php echo $publish_date; ?></li>
+            </ul>
+            <div class="text">
+                <?php echo nl2br(htmlspecialchars($content)); ?>
+            </div>
+            <div class="post-tags">
+                <ul class="tags-list clearfix">
+                    <li><h5>Tags:</h5></li>
+                    <?php foreach ($tags as $tag): ?>
+                        <li><a href="blog-details.php?tag=<?php echo urlencode(trim($tag)); ?>"><?php echo htmlspecialchars(trim($tag)); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+                            <?php 
+
+// Get the blog ID from URL
+$blog_id = $_GET['id'] ?? 1; // Default to 1 if not set
+
+// Handle comment submission only if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_comment'])) {
+    // Sanitize inputs to prevent XSS and SQL injection
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $comment = mysqli_real_escape_string($conn, $_POST['comment']);
+
+    // Insert comment into database only if there is a valid comment
+    if (!empty($user_name) && !empty($comment)) {
+        $query = "INSERT INTO comments (blog_id, user_name, comment) VALUES ('$blog_id', '$user_name', '$comment')";
+        mysqli_query($conn, $query);
+    }
+
+    // Redirect to avoid resubmission on page refresh
+    header("Location: blog-details.php?id=" . $blog_id);
+    exit(); // Stop further execution after redirect
+}
+
+// Fetch comments for the blog
+$query = "SELECT * FROM comments WHERE blog_id = $blog_id ORDER BY comment_date DESC";
+$result = mysqli_query($conn, $query);
+
+// Count total comments
+$total_comments = mysqli_num_rows($result);
+?>
+
+<!-- Comments Section -->
+<div class="comments-area">
+    <div class="group-title">
+        <h4><?php echo $total_comments; ?> Comments</h4>
+    </div>
+
+    <?php if ($total_comments > 0) : ?>
+        <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+            <div class="comment-box">
+                <div class="comment">
+                    <figure class="thumb-box">
+                        <img src="assets/images/news/<?php echo $row['user_image'] ?: 'default.jpg'; ?>" alt="">
+                    </figure>
+                    <div class="comment-inner">
+                        <div class="comment-info clearfix">
+                            <h5><?php echo htmlspecialchars($row['user_name']); ?></h5>
+                            <span><?php echo date('F j, Y', strtotime($row['comment_date'])); ?></span>
+                        </div>
+                        <div class="text">
+                            <p><?php echo htmlspecialchars($row['comment']); ?></p>
+                            <a href="#"><i class="fas fa-share"></i>Reply</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile; ?>
+    <?php else : ?>
+        <p>No comments yet. Be the first to comment!</p>
+    <?php endif; ?>
+</div>
+
+<!-- Comment Submission Form -->
+<!-- Comment Submission Form -->
+<div class="leave-comment">
+    <h4>Leave a Comment</h4>
+    <form method="post">
+        <input type="hidden" name="blog_id" value="<?php echo $blog_id; ?>">
+        <div class="form-group">
+            <input type="text" name="user_name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+            <textarea name="comment" placeholder="Your Comment" required></textarea>
+        </div>
+        <button type="submit" name="submit_comment" class="theme-btn">Post Comment</button>
+    </form>
+</div><br><br>
+
                             <div class="comments-form-area">
                                 <div class="group-title">
                                     <h4>Leave a Comment</h4>
                                 </div>
-                                <form action="blog-details.html" method="post" class="comment-form default-form">
+                                <form action="blog-details.php" method="post" class="comment-form default-form">
                                     <div class="row">
                                         <div class="col-lg-6 col-md-6 col-sm-12 form-group">
                                             <input type="text" name="name" placeholder="Your name" required="">
@@ -139,94 +209,111 @@
                     </div>
                     <div class="col-lg-4 col-md-12 col-sm-12 sidebar-side">
                         <div class="blog-sidebar">
-                            <div class="sidebar-widget search-widget">
-                                <div class="widget-title">
-                                    <h4>Search</h4>
+                        <div class="sidebar-widget search-widget">
+                        <div class="widget-title">
+                            <h4>Search</h4>
+                        </div>
+                        <div class="search-inner">
+                        <form method="GET" action="blog.php">
+                                <div class="form-group">
+                                    <input type="text" name="search" placeholder="Search..."
+                                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
+                                        required>
+                                    <button type="submit"><i class="fas fa-search"></i></button>
                                 </div>
-                                <div class="search-inner">
-                                    <form action="blog-1.html" method="post">
-                                        <div class="form-group">
-                                            <input type="search" name="search_field" placeholder="Search" required="">
-                                            <button type="submit"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="sidebar-widget social-widget">
-                                <div class="widget-title">
-                                    <h4>Follow Us On</h4>
-                                </div>
-                                <ul class="social-links clearfix">
-                                    <li><a href="blog-1.html"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="blog-1.html"><i class="fab fa-google-plus-g"></i></a></li>
-                                    <li><a href="blog-1.html"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="blog-1.html"><i class="fab fa-linkedin-in"></i></a></li>
-                                    <li><a href="blog-1.html"><i class="fab fa-instagram"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="sidebar-widget category-widget">
+                            </form>
+                        </div>
+                    </div>
+                            <?php
+                    // Fetch social media links from database
+                    $query = "SELECT icon_class, link FROM social_links";
+                    $result = mysqli_query($conn, $query);
+                    ?>
+
+                    <div class="sidebar-widget social-widget">
+                        <div class="widget-title">
+                            <h4>Follow Us On</h4>
+                        </div>
+                        <ul class="social-links clearfix">
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                <li>
+                                    <a href="<?php echo htmlspecialchars($row['link']); ?>" target="_blank">
+                                        <i class="<?php echo htmlspecialchars($row['icon_class']); ?>"></i>
+                                    </a>
+                                </li>
+                            <?php endwhile; ?>
+                        </ul>
+                    </div>
+                            <!-- <div class="sidebar-widget category-widget">
                                 <div class="widget-title">
                                     <h4>Category</h4>
                                 </div>
                                 <div class="widget-content">
                                     <ul class="category-list clearfix">
-                                        <li><a href="blog-details.html">Home improvement<span>(9)</span></a></li>
-                                        <li><a href="blog-details.html">Architecture<span>(5)</span></a></li>
-                                        <li><a href="blog-details.html">Tips and advice<span>(2)</span></a></li>
-                                        <li><a href="blog-details.html">Interior<span>(7)</span></a></li>
-                                        <li><a href="blog-details.html">Real Estate<span>(3)</span></a></li>
+                                        <li><a href="blog-details.php">Home improvement<span>(9)</span></a></li>
+                                        <li><a href="blog-details.php">Architecture<span>(5)</span></a></li>
+                                        <li><a href="blog-details.php">Tips and advice<span>(2)</span></a></li>
+                                        <li><a href="blog-details.php">Interior<span>(7)</span></a></li>
+                                        <li><a href="blog-details.php">Real Estate<span>(3)</span></a></li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div class="sidebar-widget post-widget">
-                                <div class="widget-title">
-                                    <h4>Recent Posts</h4>
+                            </div> -->
+                            <?php
+                    // Fetch recent blog posts ordered by updated_at (latest first)
+                    $query = "SELECT id, title, image, publish_date FROM blogs ORDER BY updated_at DESC LIMIT 3";
+                    $result = mysqli_query($conn, $query);
+                    ?>
+
+                    <div class="sidebar-widget post-widget">
+                        <div class="widget-title">
+                            <h4>Recent Posts</h4>
+                        </div>
+                        <div class="post-inner">
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                <div class="post">
+                                    <figure class="post-thumb">
+                                        <a href="blog-details.php?id=<?php echo $row['id']; ?>">
+                                            <img src="assets/images/blogs/<?php echo $row['image']; ?>" alt="">
+                                        </a>
+                                    </figure>
+                                    <h5>
+                                        <a href="blog-details.php?id=<?php echo $row['id']; ?>">
+                                            <?php echo htmlspecialchars($row['title']); ?>
+                                        </a>
+                                    </h5>
+                                    <span
+                                        class="post-date"><?php echo date("F d, Y", strtotime($row['publish_date'])); ?></span>
                                 </div>
-                                <div class="post-inner">
-                                    <div class="post">
-                                        <figure class="post-thumb"><a href="blog-details.html"><img src="assets/images/news/post-1.jpg" alt=""></a></figure>
-                                        <h5><a href="blog-details.html">Best interior design idea for your home.</a></h5>
-                                        <span class="post-date">April 10, 2020</span>
-                                    </div>
-                                    <div class="post">
-                                        <figure class="post-thumb"><a href="blog-details.html"><img src="assets/images/news/post-2.jpg" alt=""></a></figure>
-                                        <h5><a href="blog-details.html">A digital prescription for the industry.</a></h5>
-                                        <span class="post-date">April 09, 2020</span>
-                                    </div>
-                                    <div class="post">
-                                        <figure class="post-thumb"><a href="blog-details.html"><img src="assets/images/news/post-3.jpg" alt=""></a></figure>
-                                        <h5><a href="blog-details.html">Strategic & commercial approach with issues.</a></h5>
-                                        <span class="post-date">April 08, 2020</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="sidebar-widget category-widget">
+                            <?php endwhile; ?>
+                        </div>
+                    </div>
+                            <!-- <div class="sidebar-widget category-widget">
                                 <div class="widget-title">
                                     <h4>Archives</h4>
                                 </div>
                                 <div class="widget-content">
                                     <ul class="category-list clearfix">
-                                        <li><a href="blog-details.html">November 2016<span>(9)</span></a></li>
-                                        <li><a href="blog-details.html">November 2017<span>(5)</span></a></li>
-                                        <li><a href="blog-details.html">November 2018<span>(2)</span></a></li>
-                                        <li><a href="blog-details.html">November 2019<span>(7)</span></a></li>
-                                        <li><a href="blog-details.html">November 2020<span>(3)</span></a></li>
+                                        <li><a href="blog-details.php">November 2016<span>(9)</span></a></li>
+                                        <li><a href="blog-details.php">November 2017<span>(5)</span></a></li>
+                                        <li><a href="blog-details.php">November 2018<span>(2)</span></a></li>
+                                        <li><a href="blog-details.php">November 2019<span>(7)</span></a></li>
+                                        <li><a href="blog-details.php">November 2020<span>(3)</span></a></li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="sidebar-widget tags-widget">
                                 <div class="widget-title">
                                     <h4>Popular Tags</h4>
                                 </div>
                                 <div class="widget-content">
                                     <ul class="tags-list clearfix">
-                                        <li><a href="blog-details.html">Real Estate</a></li>
-                                        <li><a href="blog-details.html">HouseHunting</a></li>
-                                        <li><a href="blog-details.html">Architecture</a></li>
-                                        <li><a href="blog-details.html">Interior</a></li>
-                                        <li><a href="blog-details.html">Sale</a></li>
-                                        <li><a href="blog-details.html">Rent Home</a></li>
-                                        <li><a href="blog-details.html">Listing</a></li>
+                                        <li><a href="blog-details.php">Real Estate</a></li>
+                                        <li><a href="blog-details.php">HouseHunting</a></li>
+                                        <li><a href="blog-details.php">Architecture</a></li>
+                                        <li><a href="blog-details.php">Interior</a></li>
+                                        <li><a href="blog-details.php">Sale</a></li>
+                                        <li><a href="blog-details.php">Rent Home</a></li>
+                                        <li><a href="blog-details.php">Listing</a></li>
                                     </ul>
                                 </div>
                             </div>
