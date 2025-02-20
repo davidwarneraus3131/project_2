@@ -4,9 +4,7 @@ session_start();
 include("./includes/header.php");
 include("./database/db.php"); 
 
-// Fetch property data from the database
-$sql = "SELECT * FROM properties WHERE featured = 1";  
-$result = mysqli_query($conn, $sql);  
+
 
 ?>
 
@@ -175,18 +173,6 @@ $result = mysqli_query($conn, $sql);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
             
             <div class="right-column pull-right">
                 <!-- search-field-section -->
@@ -203,51 +189,52 @@ $result = mysqli_query($conn, $sql);
                                         <div class="tab active-tab" id="tab-1">
                                             <div class="inner-box">
                                                 <div class="top-search">
-                                                    <form action="index.php" method="post" class="search-form">
-                                                        <div class="row clearfix">
-                                                            <div class="col-lg-4 col-md-12 col-sm-12 column">
-                                                                <div class="form-group">
-                                                                    <label>Search Property</label>
-                                                                    <div class="field-input">
-                                                                        <i class="fas fa-search"></i>
-                                                                        <input type="search" name="search-field" placeholder="Search by Property, Location or Landmark..." required="">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-6 col-sm-12 column">
-                                                                <div class="form-group">
-                                                                    <label>Location</label>
-                                                                    <div class="select-box">
-                                                                        <i class="far fa-compass"></i>
-                                                                        <select class="wide">
-                                                                           <option data-display="Input location">Input location</option>
-                                                                           <option value="1">New York</option>
-                                                                           <option value="2">California</option>
-                                                                           <option value="3">London</option>
-                                                                           <option value="4">Maxico</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-6 col-sm-12 column">
-                                                                <div class="form-group">
-                                                                    <label>Property Type</label>
-                                                                    <div class="select-box">
-                                                                        <select class="wide">
-                                                                           <option data-display="All Type">All Type</option>
-                                                                           <option value="1">Laxury</option>
-                                                                           <option value="2">Classic</option>
-                                                                           <option value="3">Modern</option>
-                                                                           <option value="4">New</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="search-btn">
-                                                            <button type="submit"><i class="fas fa-search"></i>Search</button>
-                                                        </div>
-                                                    </form>
+                                                <form action="property-list.php" method="post" class="search-form">
+    <div class="row clearfix">
+        <div class="col-lg-4 col-md-12 col-sm-12 column">
+            <div class="form-group">
+                <label>Search Property</label>
+                <div class="field-input">
+                    <i class="fas fa-search"></i>
+                    <input type="search" name="search-field" placeholder="Search by Property..." >
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 column">
+            <div class="form-group">
+                <label>Location</label>
+                <div class="select-box">
+                    <i class="far fa-compass"></i>
+                    <select class="wide" name="location">
+                        <option value="">Input location</option>
+                        <option value="New York">New York</option>
+                        <option value="California">California</option>
+                        <option value="London">London</option>
+                        <option value="Mexico">Mexico</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 column">
+            <div class="form-group">
+                <label>Property Type</label>
+                <div class="select-box">
+                    <select class="wide" name="property-type">
+                        <option value="">All Type</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="villa">villa</option>
+                        <option value="house">house</option>
+                        <option value="New">New</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-btn">
+        <button type="submit"><i class="fas fa-search"></i>Search</button>
+    </div>
+</form>
+
                                                 </div>
                                                 <div class="switch_btn_one ">
                                                     <button class="nav-btn nav-toggler navSidebar-button clearfix search__toggler">Advanced Search<i class="fas fa-angle-down"></i></button>
@@ -322,7 +309,7 @@ $result = mysqli_query($conn, $sql);
                                                                            <option value="2">Max Bath</option>
                                                                            <option value="3">Max Bath</option>
                                                                            <option value="4">Max Bath</option>
-                                                                        </select>
+                                                                        </select> 
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -367,7 +354,7 @@ $result = mysqli_query($conn, $sql);
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="tab" id="tab-2">
+                                        <!-- <div class="tab" id="tab-2">
                                             <div class="inner-box">
                                                 <div class="top-search">
                                                     <form action="index.php" method="post" class="search-form">
@@ -377,7 +364,7 @@ $result = mysqli_query($conn, $sql);
                                                                     <label>Search Property</label>
                                                                     <div class="field-input">
                                                                         <i class="fas fa-search"></i>
-                                                                        <input type="search" name="search-field" placeholder="Search by Property, Location or Landmark..." required="">
+                                                                        <input type="search" name="search-field" placeholder="Search by Property, Location or Landmark..." >
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -533,7 +520,7 @@ $result = mysqli_query($conn, $sql);
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -543,36 +530,210 @@ $result = mysqli_query($conn, $sql);
                 <!-- search-field-section end -->
 
                 
+
+                <?php
+
+
+
+// Set the number of records per page
+$limit = 6;
+
+// Get the current page number from URL, default is 1
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+if ($page < 1) $page = 1;
+
+// Calculate the starting record for the query
+$offset = ($page - 1) * $limit;
+
+// Get total records count
+$total_query = "SELECT COUNT(*) AS total FROM properties";
+$total_result = mysqli_query($conn, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_records = $total_row['total'] ?? 0; 
+
+// Calculate total pages
+$total_pages = ($total_records > 0) ? ceil($total_records / $limit) : 1;
+
+// Default sorting order
+$sort_order = "ORDER BY properties.created_at DESC"; // Default: Newest
+
+// Check if a sorting option is selected
+if (isset($_GET['sort'])) {
+    switch ($_GET['sort']) {
+        case '1':
+            $sort_order = "ORDER BY properties.created_at DESC"; // New Arrival
+            break;
+        case '2':
+            $sort_order = "ORDER BY properties.rating DESC"; // Top Rated
+            break;
+        case '3':
+            $sort_order = "ORDER BY properties.price ASC"; // Offer Place (Lowest Price)
+            break;
+        case '4':
+            $sort_order = "ORDER BY properties.views DESC"; // Most Place (Most Views)
+            break;
+    }
+}
+
+// Initialize filter conditions
+$search_condition = "";
+$location_condition = "";
+$type_condition = "";
+
+// Check if search query is provided
+if (isset($_POST['search-field']) && !empty($_POST['search-field'])) {
+    $search_query = mysqli_real_escape_string($conn, $_POST['search-field']);
+    $search_condition = "AND (properties.property_name LIKE '%$search_query%' OR properties.description LIKE '%$search_query%')";
+}
+
+// Check if location is selected
+if (isset($_POST['location']) && !empty($_POST['location'])) {
+    $location = mysqli_real_escape_string($conn, $_POST['location']);
+    $location_condition = "AND properties.location = '$location'";
+}
+
+// Check if property type is selected
+if (isset($_POST['property-type']) && !empty($_POST['property-type'])) {
+    $property_type = mysqli_real_escape_string($conn, $_POST['property-type']);
+    $type_condition = "AND properties.property_type = '$property_type'";
+}
+
+// Fetch records with pagination and filtering
+$sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+               users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
+        FROM properties 
+        JOIN users ON properties.agent_id = users.id 
+        WHERE 1=1 $search_condition $location_condition $type_condition 
+        $sort_order 
+        LIMIT $limit OFFSET $offset";
+
+$result = mysqli_query($conn, $sql);
+
+// Showing dynamic results text
+$start_item = ($page - 1) * $limit + 1;
+$end_item = min($start_item + $limit - 1, $total_records);
+
+
+
+?>
+
+
                 <!-- deals-style-two -->
                 <section class="deals-style-two">
                     <div class="auto-container">
-                        <div class="item-shorting clearfix">
-                            <div class="left-column pull-left">
-                                <h5>Search Reasults: <span>Showing 1-5 of 20 Listings</span></h5>
-                            </div>
-                            <div class="right-column pull-right clearfix">
-                                <div class="short-box clearfix">
-                                    <div class="select-box">
-                                        <select class="wide">
-                                           <option data-display="Sort by: Newest">Sort by: Newest</option>
-                                           <option value="1">New Arrival</option>
-                                           <option value="2">Top Rated</option>
-                                           <option value="3">Offer Place</option>
-                                           <option value="4">Most Place</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="short-menu clearfix">
-                                    <button class="list-view on"><i class="icon-35"></i></button>
-                                    <button class="grid-view"><i class="icon-36"></i></button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="item-shorting clearfix">
+    <div class="left-column pull-left">
+        <h5>Search Results: <span>Showing <?php echo $start_item . '-' . $end_item; ?> of <?php echo $total_records; ?> Listings</span></h5>
+    </div>
+    <div class="right-column pull-right clearfix">
+        <div class="short-box clearfix">
+            <div class="select-box">
+                <select class="wide" onchange="sortProperties(this.value)">
+                    <option value="newest" <?php echo (!isset($_GET['sort']) || $_GET['sort'] == '1') ? 'selected' : ''; ?>>Sort by: Newest</option>
+                    <option value="1" <?php echo (isset($_GET['sort']) && $_GET['sort'] == '1') ? 'selected' : ''; ?>>New Arrival</option>
+                    <option value="2" <?php echo (isset($_GET['sort']) && $_GET['sort'] == '2') ? 'selected' : ''; ?>>Top Rated</option>
+                    <option value="3" <?php echo (isset($_GET['sort']) && $_GET['sort'] == '3') ? 'selected' : ''; ?>>Offer Place</option>
+                    <option value="4" <?php echo (isset($_GET['sort']) && $_GET['sort'] == '4') ? 'selected' : ''; ?>>Most Place</option>
+                </select>
+            </div>
+        </div>
+        <div class="short-menu clearfix">
+            <button class="list-view on"><i class="icon-35"></i></button>
+            <button class="grid-view"><i class="icon-36"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+function sortProperties(value) {
+    window.location.href = "?sort=" + value + "&page=1";
+}
+</script>
 
 
 
+                        <?php
+// Set the number of records per page
+$limit = 6;
+
+// Get the current page number from URL, default is 1
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+if ($page < 1) $page = 1;
+
+// Calculate the starting record for the query
+$offset = ($page - 1) * $limit;
+
+// Get total records count
+$total_query = "SELECT COUNT(*) AS total FROM properties";
+$total_result = mysqli_query($conn, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_records = $total_row['total'] ?? 0; 
+
+// Calculate total pages
+$total_pages = ($total_records > 0) ? ceil($total_records / $limit) : 1;
 
 
+// Default sorting order
+$sort_order = "ORDER BY properties.created_at DESC"; // Default: Newest
+
+// Check if a sorting option is selected
+if (isset($_GET['sort'])) {
+    switch ($_GET['sort']) {
+        case '1':
+            $sort_order = "ORDER BY properties.created_at DESC"; // New Arrival
+            break;
+        case '2':
+            $sort_order = "ORDER BY properties.rating DESC"; // Top Rated
+            break;
+        case '3':
+            $sort_order = "ORDER BY properties.price ASC"; // Offer Place (Lowest Price)
+            break;
+        case '4':
+            $sort_order = "ORDER BY properties.views DESC"; // Most Place (Most Views)
+            break;
+    }
+}
+
+
+
+// Initialize the filter conditions
+$search_condition = "";
+$location_condition = "";
+$type_condition = "";
+
+// Check if a search query is provided
+if (isset($_POST['search-field']) && !empty($_POST['search-field'])) {
+    $search_query = mysqli_real_escape_string($conn, $_POST['search-field']);
+    $search_condition = "AND (properties.property_name LIKE '%$search_query%' OR properties.description LIKE '%$search_query%')";
+}
+
+// Check if location is selected
+if (isset($_POST['location']) && $_POST['location'] != '') {
+    $location = $_POST['location'];
+    $location_condition = "AND properties.location_id = $location";
+}
+
+// Check if property type is selected
+if (isset($_POST['property-type']) && $_POST['property-type'] != '') {
+    $property_type = $_POST['property-type'];
+    $type_condition = "AND properties.property_type = $property_type";
+}
+
+// Fetch records with pagination and filtering
+$sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+               users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
+        FROM properties 
+        JOIN users ON properties.agent_id = users.id 
+        WHERE 1=1 $search_condition $location_condition $type_condition 
+        $sort_order 
+        LIMIT $limit OFFSET $offset";
+
+$result = mysqli_query($conn, $sql);
+
+// Showing dynamic results text
+$start_item = ($page - 1) * $limit + 1;
+$end_item = min($start_item + $limit - 1, $total_records);
+?>
 
 
                         <div class="wrapper list">
@@ -584,7 +745,8 @@ $result = mysqli_query($conn, $sql);
             $property_name = $row['property_name'];
             $price = $row['price'];
             $description = $row['description'];
-            $agent_name = $row['agent_name'];
+            $agent_name = $row['name'];
+            $agent_img = $row['user_img'];
             $property_img = $row['property_img1'];
             $beds = $row['beds'];
             $baths = $row['baths'];
@@ -596,8 +758,14 @@ $result = mysqli_query($conn, $sql);
                 <div class="inner-box">
                     <div class="image-box">
                         <figure class="image"><img src="assets/images/property/<?php echo $property_img; ?>" alt=""></figure>
-                        <div class="batch"><i class="icon-11"></i></div>
-                        <span class="category">Featured</span>
+                        <?php if ($row['batch'] == 1): ?>
+                            <div class="batch"><i class="icon-11"></i></div>
+<?php endif; ?>
+                        
+                       
+                        <?php if ($row['featured'] == 1): ?>
+    <span class="category">Featured</span>
+<?php endif; ?>
                         <div class="buy-btn"><a href="property-details.php?id=<?php echo $row['id']; ?>">For Buy</a></div>
                     </div>
                     <div class="lower-content">
@@ -605,11 +773,11 @@ $result = mysqli_query($conn, $sql);
                         <div class="price-box clearfix">
                             <div class="price-info pull-left">
                                 <h6>Start From</h6>
-                                <h4>$<?php echo number_format($price, 2); ?></h4>
+                                <h4>₹<?php echo number_format($price, 2); ?></h4>
                             </div>
                             <div class="author-box pull-right">
                                 <figure class="author-thumb"> 
-                                    <img src="assets/images/feature/author-1.jpg" alt="">
+                                    <img src="assets/images/users/<?php echo $agent_img ?>" alt="">
                                     <span><?php echo $agent_name; ?></span>
                                 </figure>
                             </div>
@@ -644,17 +812,32 @@ $result = mysqli_query($conn, $sql);
 <!-- Grid Layout for Properties -->
 <div class="deals-grid-content">
     <div class="row clearfix">
-        <?php
-        // Assuming you're fetching multiple properties
-        $sql_grid = "SELECT * FROM properties";  // Fetch all properties for grid view
-        $result_grid = mysqli_query($conn, $sql_grid);
-        if ($result_grid && mysqli_num_rows($result_grid) > 0) {
-            while ($row = mysqli_fetch_assoc($result_grid)) {
-                // Fetch data for each property
+    <?php
+// Set the number of records per page
+
+
+// Fetch records with pagination
+$sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+               users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
+        FROM properties 
+        JOIN users ON properties.agent_id = users.id 
+        LIMIT $limit OFFSET $offset";
+
+$result = mysqli_query($conn, $sql);
+
+// Showing dynamic results text
+$start_item = ($page - 1) * $limit + 1;
+$end_item = min($start_item + $limit - 1, $total_records);
+  
+$result = mysqli_query($conn, $sql);  
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
                 $property_name = $row['property_name'];
                 $price = $row['price'];
-                $agent_name = $row['agent_name'];
-                $property_img = $row['property_img'];
+                $description = $row['description'];
+                $agent_name = $row['name'];
+                $agent_img = $row['user_img'];
+                $property_img = $row['property_img1'];
                 $beds = $row['beds'];
                 $baths = $row['baths'];
                 $square_feet = $row['square_feet'];
@@ -664,13 +847,21 @@ $result = mysqli_query($conn, $sql);
                 <div class="inner-box">
                     <div class="image-box">
                         <figure class="image"><img src="assets/images/property/<?php echo $property_img; ?>" alt=""></figure>
-                        <div class="batch"><i class="icon-11"></i></div>
-                        <span class="category">Featured</span>
+                        
+                        <?php if ($row['batch'] == 1): ?>
+                            <div class="batch"><i class="icon-11"></i></div>
+<?php endif; ?>
+                        
+                       
+                        <?php if ($row['featured'] == 1): ?>
+    <span class="category">Featured</span>
+<?php endif; ?>
+
                     </div>
                     <div class="lower-content">
                         <div class="author-info clearfix">
                             <div class="author pull-left">
-                                <figure class="author-thumb"><img src="assets/images/feature/author-1.jpg" alt=""></figure>
+                                <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>" alt=""></figure>
                                 <h6><?php echo $agent_name; ?></h6>
                             </div>
                             <div class="buy-btn pull-right"><a href="property-details.php?id=<?php echo $row['id']; ?>">For Buy</a></div>
@@ -679,7 +870,7 @@ $result = mysqli_query($conn, $sql);
                         <div class="price-box clearfix">
                             <div class="price-info pull-left">
                                 <h6>Start From</h6>
-                                <h4>$<?php echo number_format($price, 2); ?></h4>
+                                <h4>₹<?php echo number_format($price, 2); ?></h4>
                             </div>
                         </div>
                         <p><?php echo $description; ?></p>
@@ -699,19 +890,54 @@ $result = mysqli_query($conn, $sql);
         ?>
     </div>
 </div>
+
+
+
 </div>
 
 
 
                         
-                        <div class="pagination-wrapper">
+                     <!-- Pagination -->
+<?php if ($total_pages > 1): ?>
+    <div class="pagination-wrapper">
+        <ul class="pagination clearfix">
+            <!-- Previous Button -->
+            <?php if ($page > 1): ?>
+                <li><a href="?page=<?php echo ($page - 1); ?>"><i class="fas fa-angle-left"></i></a></li>
+            <?php endif; ?>
+
+            <!-- Page Numbers -->
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <li>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo ($page == $i) ? 'current' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                </li>
+            <?php endfor; ?>
+
+            <!-- Next Button -->
+            <?php if ($page < $total_pages): ?>
+                <li><a href="?page=<?php echo ($page + 1); ?>"><i class="fas fa-angle-right"></i></a></li>
+            <?php endif; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+
+                    <!-- <div class="pagination-wrapper">
                             <ul class="pagination clearfix">
-                                <li><a href="property-list-3.php" class="current">1</a></li>
-                                <li><a href="property-list-3.php">2</a></li>
-                                <li><a href="property-list-3.php">3</a></li>
-                                <li><a href="property-list-3.php"><i class="fas fa-angle-right"></i></a></li>
+                                <li><a href="property-list-3.html" class="current">1</a></li>
+                                <li><a href="property-list-3.html">2</a></li>
+                                <li><a href="property-list-3.html">3</a></li>
+                                <li><a href="property-list-3.html"><i class="fas fa-angle-right"></i></a></li>
                             </ul>
-                        </div>
+                        </div> -->
+
+
+
+
+
                     </div>
                 </section>
                 <!-- deals-style-two end -->

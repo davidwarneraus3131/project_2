@@ -127,9 +127,32 @@
                             <li><a href="index.php"><i class="fab fa-google-plus-g"></i></a></li>
                             <li><a href="index.php"><i class="fab fa-vimeo-v"></i></a></li>
                         </ul>
-                        <div class="sign-box">
-                            <a href="signin.php"><i class="fas fa-user"></i>Sign In</a>
-                        </div>
+                        <?php
+
+
+
+if (isset($_SESSION['user_id'])) {
+    // Fetch user details from the session
+    $user_name = $_SESSION['name'];  
+    $user_img = $_SESSION['user_img'];  
+?>
+    <div class="sign-box">
+        <a href="profile.php">
+            <img src="assets/images/users/<?php echo $user_img; ?>" alt="User Image" style="width:40px; height:40px; border-radius:50%;">
+            <?php echo $user_name; ?>
+        </a>
+        <a href="./logout.php" class="logout-btn" style="color:red; margin-left:10px;">Logout</a>
+    </div>
+<?php
+} else {
+?>
+    <div class="sign-box">
+        <a href="signin.php"><i class="fas fa-user"></i> Sign In</a>
+    </div>
+<?php
+}
+?>
+
                     </div>
                 </div>
             </div>

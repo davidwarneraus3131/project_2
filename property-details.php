@@ -26,8 +26,15 @@ include("./database/db.php");
 
 <?php 
 
-        $property_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $sql = "SELECT * FROM properties WHERE id = $property_id";
+        $prop_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        // $sql = "SELECT * FROM properties WHERE id = $property_id";
+
+
+        $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+        users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description,users.house,users.street,users.city,users.state,users.country 
+        FROM properties 
+        JOIN users ON properties.agent_id = users.id 
+        WHERE properties.id = '$prop_id'";
 
 
 $result = $conn->query($sql);
@@ -45,7 +52,7 @@ if ($result->num_rows > 0) {
     $property_img4 = $property['property_img4'];
     $property_img5 = $property['property_img5'];
     $property_img6 = $property['property_img6'];
-    $agent_name = $property['agent_name'];
+    $agent_name = $property['name'];
     $property_id = $property['property_id'];
     $beds = $property['beds'];
     $baths = $property['baths'];
@@ -72,12 +79,20 @@ if ($result->num_rows > 0) {
     $nearbyres_1 = $property['nearbyres_1'];
     $nearbyhos_1 = $property['nearbyhos_1'];
 
+    $agent_img = $property['user_img'];
+    $agent_phone = $property['phone'];
+    $agent_house = $property['house'];
+    $agent_street = $property['street'];
+    $agent_city = $property['city'];
+    $agent_state = $property['state'];
+    $agent_id = $property['agent_id'];
+
 
 } else {
     echo "No property found with that ID.";
 }
 
-$conn->close();
+// $conn->close();
 ?>
         <!--End Page Title-->
 
@@ -233,7 +248,7 @@ $conn->close();
                         <h3><?php echo $property_name; ?></h3>
                         <div class="author-info clearfix">
                             <div class="author-box pull-left">
-                                <figure class="author-thumb"><img src="assets/images/feature/author-1.jpg" alt=""></figure>
+                                <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>" alt=""></figure>
                                 <h6><?php echo $agent_name; ?></h6>
                             </div>
                             <ul class="rating clearfix pull-left">
@@ -252,7 +267,8 @@ $conn->close();
                                 <li><a href="property-details.php">For Buy</a></li>
                             </ul>
                             <div class="price-box pull-right">
-                                <h3><?php echo $property_price?></h3>
+                                <h3>
+                                ₹<?php echo $property_price?></h3>
                             </div>
                         </div>
                         <ul class="other-option pull-right clearfix">
@@ -283,7 +299,7 @@ $conn->close();
                                     <li>Property ID: <span><?php echo $property_id ?></span></li>
                                     <li>Rooms: <span><?php echo $rooms ?></span></li>
                                     <li>Garage Size: <span><?php echo $garage_size ?></span></li>
-                                    <li>Property Price: <span><?php echo $property_price ?></span></li>
+                                    <li>Property Price: ₹<span><?php echo $property_price ?></span></li>
                                     <li>Bedrooms: <span><?php echo $beds ?></span></li>
                                     <li>Year Built: <span><?php echo $year_built ?></span></li>
                                     <li>Property Type: <span><?php echo $property_type ?></span></li>
@@ -308,54 +324,65 @@ $conn->close();
                                 </ul>
                             </div>
                             <div class="floorplan-inner content-widget">
-                                <div class="title-box">
-                                    <h4>Floor Plan</h4>
-                                </div>
-                                <ul class="accordion-box">
-                                    <li class="accordion block active-block">
-                                        <div class="acc-btn active">
-                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
-                                            <h5>First Floor</h5>
-                                        </div>
-                                        <div class="acc-content current">
-                                            <div class="content-box">
-                                                <p>Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim  est laborum. Sed perspiciatis unde omnis iste natus error sit voluptatem accusa dolore mque laudant.</p>
-                                                <figure class="image-box">
-                                                    <img src="assets/images/property/floor-1.png" alt="">
-                                                </figure>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="accordion block">
-                                        <div class="acc-btn">
-                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
-                                            <h5>Second Floor</h5>
-                                        </div>
-                                        <div class="acc-content">
-                                            <div class="content-box">
-                                                <p>Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim  est laborum. Sed perspiciatis unde omnis iste natus error sit voluptatem accusa dolore mque laudant.</p>
-                                                <figure class="image-box">
-                                                    <img src="assets/images/property/floor-1.png" alt="">
-                                                </figure>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="accordion block">
-                                         <div class="acc-btn">
-                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
-                                            <h5>Third Floor</h5>
-                                        </div>
-                                        <div class="acc-content">
-                                            <div class="content-box">
-                                                <p>Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim  est laborum. Sed perspiciatis unde omnis iste natus error sit voluptatem accusa dolore mque laudant.</p>
-                                                <figure class="image-box">
-                                                    <img src="assets/images/property/floor-1.png" alt="">
-                                                </figure>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+    <div class="title-box">
+        <h4>Floor Plan</h4>
+    </div>
+    <ul class="accordion-box">
+        <!-- First Floor -->
+        <?php if (!empty($property['floor_plan_1_description'])): ?>
+        <li class="accordion block active-block">
+            <div class="acc-btn active">
+                <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                <h5>First Floor</h5>
+            </div>
+            <div class="acc-content current">
+                <div class="content-box">
+                    <p><?php echo $property['floor_plan_1_description']; ?></p>
+                    <figure class="image-box">
+                        <img src="assets/images/floor/<?php echo $property['floor_plan_1_image']; ?>" alt="First Floor">
+                    </figure>
+                </div>
+            </div>
+        </li>
+        <?php endif; ?>
+
+        <!-- Second Floor -->
+        <?php if (!empty($property['floor_plan_2_description'])): ?>
+        <li class="accordion block">
+            <div class="acc-btn">
+                <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                <h5>Second Floor</h5>
+            </div>
+            <div class="acc-content">
+                <div class="content-box">
+                    <p><?php echo $property['floor_plan_2_description']; ?></p>
+                    <figure class="image-box">
+                        <img src="assets/images/floor/<?php echo $property['floor_plan_2_image']; ?>" alt="Second Floor">
+                    </figure>
+                </div>
+            </div>
+        </li>
+        <?php endif; ?>
+
+        <!-- Third Floor -->
+        <?php if (!empty($property['floor_plan_3_description'])): ?>
+        <li class="accordion block">
+            <div class="acc-btn">
+                <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                <h5>Third Floor</h5>
+            </div>
+            <div class="acc-content">
+                <div class="content-box">
+                    <p><?php echo $property['floor_plan_3_description']; ?></p>
+                    <figure class="image-box">
+                        <img src="assets/images/floor/<?php echo $property['floor_plan_3_image']; ?>" alt="Third Floor">
+                    </figure>
+                </div>
+            </div>
+        </li>
+        <?php endif; ?>
+    </ul>
+</div>
                             <div class="location-box content-widget">
                                 <div class="title-box">
                                     <h4>Location</h4>
@@ -449,14 +476,14 @@ $conn->close();
                                     </div>
                                 </div>
                             </div>
-                            <div class="statistics-box content-widget">
+                            <!-- <div class="statistics-box content-widget">
                                 <div class="title-box">
                                     <h4>Page Statistics</h4>
                                 </div>
                                 <figure class="image-box">
                                     <a href="assets/images/property/statistics-1.png" class="lightbox-image" data-fancybox="gallery"><img src="assets/images/property/statistics-1.png" alt=""></a>
                                 </figure>
-                            </div>
+                            </div> -->
                             <div class="schedule-box content-widget">
                                 <div class="title-box">
                                     <h4>Schedule A Tour</h4>
@@ -511,15 +538,14 @@ $conn->close();
                         <div class="property-sidebar default-sidebar">
                             <div class="author-widget sidebar-widget">
                                 <div class="author-box">
-                                    <figure class="author-thumb"><img src="assets/images/property/author-1.jpg" alt=""></figure>
+                                    <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>" alt=""></figure>
                                     <div class="inner">
                                         <h4><?php echo $agent_name; ?></h4>
                                         <ul class="info clearfix">
-                                            <li><i class="fas fa-map-marker-alt"></i>84 St. John Wood High Street, 
-                                            St Johns Wood</li>
-                                            <li><i class="fas fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
+                                            <li><i class="fas fa-map-marker-alt"></i><?php echo  $agent_house.','.$agent_street.','.$agent_city.','.$agent_state ?>.</li>
+                                            <li><i class="fas fa-phone"></i><a href="tel:<?php echo $agent_phone ?>"><?php echo $agent_phone ?></a></li>
                                         </ul>
-                                        <div class="btn-box"><a href="agents-details.php">View Listing</a></div>
+                                        <div class="btn-box"><a href="agency-details.php?id=<?php echo $agent_id; ?>">View Listing</a></div>
                                     </div>
                                 </div>
                                 <div class="form-inner">
@@ -543,168 +569,233 @@ $conn->close();
                                 </div>
                             </div>
                             <div class="calculator-widget sidebar-widget">
-                                <div class="calculate-inner">
-                                    <div class="widget-title">
-                                        <h4>Mortgage Calculator</h4>
+
+
+  <div class="calculate-inner">
+    <div class="widget-title">
+        <h4>Mortgage Calculator</h4>
+    </div>
+    <form id="mortgageForm" method="post" class="default-form">
+        <div class="form-group">
+            <i class="fas fa-rupee-sign"></i>
+            <input type="number" name="total_amount" placeholder="Total Amount (₹)" required>
+        </div>
+        <div class="form-group">
+            <i class="fas fa-rupee-sign"></i>
+            <input type="number" name="down_payment" placeholder="Down Payment (₹)" required>
+        </div>
+        <div class="form-group">
+            <i class="fas fa-percent"></i>
+            <input type="number" name="interest_rate" placeholder="Interest Rate (%)" required>
+        </div>
+        <div class="form-group">
+            <i class="far fa-calendar-alt"></i>
+            <input type="number" name="loan" placeholder="Loan Terms (Years)" required>
+        </div>
+        <div class="form-group">
+            <div class="select-box">
+                <select class="wide">
+                    <option data-display="Monthly">Monthly</option>
+                    <option value="1">Yearly</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group message-btn">
+            <button type="submit" class="theme-btn btn-one">Calculate Now</button>
+        </div>
+    </form>
+</div>
+
+<!-- Result Popup -->
+<div class="popup-overlay" style="display:none;"></div>
+<div class="popup-box" id="resultPopup" style="display:none;">
+    <h4>Estimated Monthly Payment</h4>
+    <p id="paymentResult"></p>
+    <button class="theme-btn btn-one close-btn">Close</button>
+</div>
+
+<!-- jQuery for AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#mortgageForm").submit(function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            $.ajax({
+                url: "mortgage-calculator.php",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (response) {
+                    if (response.status === "success") {
+                        $("#paymentResult").html("₹" + response.payment);
+                        $(".popup-overlay, #resultPopup").fadeIn();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("Something went wrong. Please try again.");
+                }
+            });
+        });
+
+        // Close popup
+        $(".close-btn, .popup-overlay").click(function () {
+            $(".popup-overlay, #resultPopup").fadeOut();
+        });
+    });
+</script>
+
+<!-- Popup Styling -->
+<style>
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+    .popup-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        text-align: center;
+        z-index: 1000;
+    }
+    .close-btn {
+        margin-top: 10px;
+        cursor: pointer;
+    }
+</style>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <?php 
+// Fetch Current Property Details
+$current_query = "SELECT property_type FROM properties WHERE id = $prop_id";
+$current_result = $conn->query($current_query);
+
+if ($current_result && $current_result->num_rows > 0) {
+    $current_row = $current_result->fetch_assoc();
+    $current_category = $current_row['property_type'];
+    $safe_category = $conn->real_escape_string($current_category);
+
+
+    $query = "SELECT properties.*, 
+    users.name, users.email, users.user_img, users.phone, users.occupation, 
+    users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description, 
+    users.house, users.street, users.city, users.state, users.country 
+FROM properties 
+JOIN users ON properties.agent_id = users.id 
+WHERE properties.property_type = '$safe_category' AND properties.id != $prop_id 
+LIMIT 3";
+
+
+
+
+    
+    
+    $result = $conn->query($query);
+}
+?>
+
+<div class="similar-content">
+    <div class="title">
+        <h4>Similar Properties</h4>
+    </div>
+    <div class="row clearfix">
+        <?php if ($result && $result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
+                    <div class="feature-block-one wow fadeInUp animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                        <div class="inner-box">
+                            <div class="image-box">
+                                <figure class="image">
+                                    <img src="assets/images/property/<?= $row['property_img1']; ?>" alt="">
+                                </figure>
+                                <div class="batch"><i class="icon-11"></i></div>
+                                <span class="category"><?= $row['property_type']; ?></span>
+                            </div>
+                            <div class="lower-content">
+                                <div class="author-info clearfix">
+                                    <div class="author pull-left">
+                                        <figure class="author-thumb">
+                                            <img src="assets/images/users/<?= $row['user_img']; ?>" alt="">
+                                        </figure>
+                                        <h6><?= $row['name']; ?></h6>
                                     </div>
-                                    <form method="post" action="mortgage-calculator.php" class="default-form">
-                                        <div class="form-group">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            <input type="number" name="total_amount" placeholder="Total Amount">
-                                        </div>
-                                        <div class="form-group">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            <input type="number" name="down_payment" placeholder="Down Payment">
-                                        </div>
-                                        <div class="form-group">
-                                            <i class="fas fa-percent"></i>
-                                            <input type="number" name="interest_rate" placeholder="Interest Rate">
-                                        </div>
-                                        <div class="form-group">
-                                            <i class="far fa-calendar-alt"></i>
-                                            <input type="number" name="loan" placeholder="Loan Terms(Years)">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="select-box">
-                                                <select class="wide">
-                                                   <option data-display="Monthly">Monthly</option>
-                                                   <option value="1">Yearly</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group message-btn">
-                                            <button type="submit" class="theme-btn btn-one">Calculate Now</button>
-                                        </div>
-                                    </form>
+                                    <div class="buy-btn pull-right"><a href="property-details.php?id=<?= $row['id']; ?>">For Buy</a></div>
+                                </div>
+                                <div class="title-text">
+                                    <h4><a href="property-details.php?id=<?= $row['id']; ?>"><?= $row['property_name']; ?></a></h4>
+                                </div>
+                                <div class="price-box clearfix">
+                                    <div class="price-info pull-left">
+                                        <h6>Start From</h6>
+                                        <h4>₹<?= number_format($row['price'], 2); ?></h4>
+                                    </div>
+                                </div>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
+                                <ul class="more-details clearfix">
+                                    <li><i class="icon-14"></i><?= $row['beds']; ?> Beds</li>
+                                    <li><i class="icon-15"></i><?= $row['baths']; ?> Baths</li>
+                                    <li><i class="icon-16"></i><?= $row['square_feet']; ?> Sq Ft</li>
+                                </ul>
+                                <div class="btn-box">
+                                    <a href="property-details.php?id=<?= $row['id']; ?>" class="theme-btn btn-two">See Details</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="similar-content">
-                    <div class="title">
-                        <h4>Similar Properties</h4>
-                    </div>
-                    <div class="row clearfix">
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-one wow fadeInUp animated" data-wow-delay="00ms" data-wow-duration="1500ms">
-                                <div class="inner-box">
-                                    <div class="image-box">
-                                        <figure class="image"><img src="assets/images/feature/feature-1.jpg" alt=""></figure>
-                                        <div class="batch"><i class="icon-11"></i></div>
-                                        <span class="category">Featured</span>
-                                    </div>
-                                    <div class="lower-content">
-                                        <div class="author-info clearfix">
-                                            <div class="author pull-left">
-                                                <figure class="author-thumb"><img src="assets/images/feature/author-1.jpg" alt=""></figure>
-                                                <h6><?php echo $agent_name; ?></h6>
-                                            </div>
-                                            <div class="buy-btn pull-right"><a href="property-details.php">For Buy</a></div>
-                                        </div>
-                                        <div class="title-text"><h4><a href="property-details.php">Villa on Grand Avenue</a></h4></div>
-                                        <div class="price-box clearfix">
-                                            <div class="price-info pull-left">
-                                                <h6>Start From</h6>
-                                                <h4>$30,000.00</h4>
-                                            </div>
-                                            <ul class="other-option pull-right clearfix">
-                                                <li><a href="property-details.php"><i class="icon-12"></i></a></li>
-                                                <li><a href="property-details.php"><i class="icon-13"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                        <ul class="more-details clearfix">
-                                            <li><i class="icon-14"></i>3 Beds</li>
-                                            <li><i class="icon-15"></i>2 Baths</li>
-                                            <li><i class="icon-16"></i>600 Sq Ft</li>
-                                        </ul>
-                                        <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-one wow fadeInUp animated" data-wow-delay="300ms" data-wow-duration="1500ms">
-                                <div class="inner-box">
-                                    <div class="image-box">
-                                        <figure class="image"><img src="assets/images/feature/feature-2.jpg" alt=""></figure>
-                                        <div class="batch"><i class="icon-11"></i></div>
-                                        <span class="category">Featured</span>
-                                    </div>
-                                    <div class="lower-content">
-                                        <div class="author-info clearfix">
-                                            <div class="author pull-left">
-                                                <figure class="author-thumb"><img src="assets/images/feature/author-2.jpg" alt=""></figure>
-                                                <h6>Robert Niro</h6>
-                                            </div>
-                                            <div class="buy-btn pull-right"><a href="property-details.php">For Rent</a></div>
-                                        </div>
-                                        <div class="title-text"><h4><a href="property-details.php">Contemporary Apartment</a></h4></div>
-                                        <div class="price-box clearfix">
-                                            <div class="price-info pull-left">
-                                                <h6>Start From</h6>
-                                                <h4>$45,000.00</h4>
-                                            </div>
-                                            <ul class="other-option pull-right clearfix">
-                                                <li><a href="property-details.php"><i class="icon-12"></i></a></li>
-                                                <li><a href="property-details.php"><i class="icon-13"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                        <ul class="more-details clearfix">
-                                            <li><i class="icon-14"></i>3 Beds</li>
-                                            <li><i class="icon-15"></i>2 Baths</li>
-                                            <li><i class="icon-16"></i>600 Sq Ft</li>
-                                        </ul>
-                                        <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-one wow fadeInUp animated" data-wow-delay="600ms" data-wow-duration="1500ms">
-                                <div class="inner-box">
-                                    <div class="image-box">
-                                        <figure class="image"><img src="assets/images/feature/feature-3.jpg" alt=""></figure>
-                                        <div class="batch"><i class="icon-11"></i></div>
-                                        <span class="category">Featured</span>
-                                    </div>
-                                    <div class="lower-content">
-                                        <div class="author-info clearfix">
-                                            <div class="author pull-left">
-                                                <figure class="author-thumb"><img src="assets/images/feature/author-3.jpg" alt=""></figure>
-                                                <h6>Keira Mel</h6>
-                                            </div>
-                                            <div class="buy-btn pull-right"><a href="property-details.php">Sold Out</a></div>
-                                        </div>
-                                        <div class="title-text"><h4><a href="property-details.php">Luxury Villa With Pool</a></h4></div>
-                                        <div class="price-box clearfix">
-                                            <div class="price-info pull-left">
-                                                <h6>Start From</h6>
-                                                <h4>$63,000.00</h4>
-                                            </div>
-                                            <ul class="other-option pull-right clearfix">
-                                                <li><a href="property-details.php"><i class="icon-12"></i></a></li>
-                                                <li><a href="property-details.php"><i class="icon-13"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                        <ul class="more-details clearfix">
-                                            <li><i class="icon-14"></i>3 Beds</li>
-                                            <li><i class="icon-15"></i>2 Baths</li>
-                                            <li><i class="icon-16"></i>600 Sq Ft</li>
-                                        </ul>
-                                        <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No similar properties found.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+
+
+
             </div>
         </section>
         <!-- property-details end -->
+
+
+
+
+
+
+
+<?php
+// Close Connection at the END
+$conn->close();
+?>
+
+
+
+
+
+
+
+
+
+
 
 
         <!-- subscribe-section -->

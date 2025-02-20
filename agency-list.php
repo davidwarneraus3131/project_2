@@ -1,494 +1,396 @@
+<?php include './includes/header.php';
+include("./database/db.php");
+
+?>
+
+<!--Page Title-->
+<section class="page-title centred" style="background-image: url(assets/images/background/page-title.jpg);">
+    <div class="auto-container">
+        <div class="content-box clearfix">
+            <h1>Agency List View</h1>
+            <ul class="bread-crumb clearfix">
+                <li><a href="index.php">Home</a></li>
+                <li>Agency List View</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--End Page Title-->
 
 
-<?php include './includes/header.php'; ?>
+<!-- agents-page-section -->
+<section class="agents-page-section agents-list">
+    <div class="auto-container">
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-12 col-sm-12 sidebar-side">
+                <div class="default-sidebar agent-sidebar">
+                    <div class="agents-search sidebar-widget">
+                        <div class="widget-title">
+                            <h5>Find Agent</h5>
+                        </div>
+                        <div class="search-inner">
+                            <form method="GET" action="agency-list.php">
+                                <div class="form-group">
+                                    <input type="text" name="name" placeholder="Enter Agent Name"
+                                        value="<?php echo isset($_GET['name']) ? $_GET['name'] : ''; ?>">
+                                </div>
+                                <div class="form-group">
+                                    <div class="select-box">
+                                        <select name="city" class="wide">
+                                            <option value="">All Cities</option>
+                                            <?php
+                                            $cityQuery = "SELECT DISTINCT city FROM users WHERE role='agent'";
+                                            $cityResult = mysqli_query($conn, $cityQuery);
+                                            print_r($cityResult);
+                                            while ($cityRow = mysqli_fetch_assoc($cityResult)) {
+                                                $selected = (isset($_GET['city']) && $_GET['city'] == $cityRow['city']) ? 'selected' : '';
+                                                echo "<option value='{$cityRow['city']}' $selected>{$cityRow['city']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="theme-btn btn-one">Search Agent</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-        <!--Page Title-->
-        <section class="page-title centred" style="background-image: url(assets/images/background/page-title.jpg);">
-            <div class="auto-container">
-                <div class="content-box clearfix">
-                    <h1>Agency List View</h1>
-                    <ul class="bread-crumb clearfix">
-                        <li><a href="index.php">Home</a></li>
-                        <li>Agency List View</li>
-                    </ul>
+
+                    <?php
+
+                    // Fetch property status counts
+                    $query = "SELECT property_status, COUNT(*) as count FROM properties GROUP BY property_status";
+                    $result = mysqli_query($conn, $query);
+                    ?>
+
+
+
+                    <div class="category-widget sidebar-widget">
+                        <div class="widget-title">
+                            <h5>Status Of Property</h5>
+                        </div>
+                        <ul class="category-list clearfix">
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                <li>
+                                    <a href="agency-details.php?status=<?php echo urlencode($row['property_status']); ?>">
+                                        <?php echo htmlspecialchars($row['property_status']); ?>
+                                        <span>(<?php echo $row['count']; ?>)</span>
+                                    </a>
+                                </li>
+                            <?php endwhile; ?>
+                        </ul>
+                    </div>
+
+
+
+
+                    <div class="featured-widget sidebar-widget">
+                        <div class="widget-title">
+                            <h5>Featured Properties</h5>
+                        </div>
+                        <div class="single-item-carousel owl-carousel owl-theme owl-nav-none dots-style-one">
+
+
+                            <?php
+                            $sql = "SELECT * FROM properties WHERE featured = 1";
+                            $result = mysqli_query($conn, $sql);
+                            // Check if there are any results
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    // Extract data from the row
+                                    $property_name = $row['property_name'];
+                                    $price = $row['price'];
+                                    $description = $row['description'];
+                                    $agent_name = $row['agent_name'];
+                                    $property_img = $row['property_img1'];
+                                    $beds = $row['beds'];
+                                    $baths = $row['baths'];
+                                    $square_feet = $row['square_feet'];
+
+                                    ?>
+                                    <div class="feature-block-one">
+
+
+
+
+                                        <div class="inner-box">
+                                            <div class="image-box">
+                                                <figure class="image"><img
+                                                        src="assets/images/property/<?php echo $property_img; ?>" alt="">
+                                                </figure>
+                                                <div class="batch"><i class="icon-11"></i></div>
+                                                <span class="category">Featured</span>
+                                            </div>
+                                            <div class="lower-content">
+                                                <div class="title-text">
+                                                    <h4><a
+                                                            href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name ?></a>
+                                                    </h4>
+                                                </div>
+                                                <div class="price-box clearfix">
+                                                    <div class="price-info">
+                                                        <h6>Start From</h6>
+                                                        <h4>₹<?php echo $price ?></h4>
+                                                    </div>
+                                                </div>
+                                                <p><?php echo $description ?></p>
+                                                <div class="btn-box"><a href="property-details.php?id=<?php echo $row['id']; ?>"
+                                                        class="theme-btn btn-two">See Details</a></div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <?php
+
+                                }
+                            } else {
+                                echo "No property found.";
+                            }
+                            ?>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-        <!--End Page Title-->
 
+            <div class="col-lg-8 col-md-12 col-sm-12 content-side">
+                <div class="agency-content-side">
+                    <?php
+                    // Set the number of records per page
+                    $limit = 4;
 
-        <!-- agents-page-section -->
-        <section class="agents-page-section agents-list">
-            <div class="auto-container">
-                <div class="row clearfix">
-                    <div class="col-lg-4 col-md-12 col-sm-12 sidebar-side">
-                        <div class="default-sidebar agent-sidebar">
-                            <div class="agents-search sidebar-widget">
-                                <div class="widget-title">
-                                    <h5>Find Agent</h5>
-                                </div>
-                                <div class="search-inner">
-                                    <form action="agents-list.php">
-                                        <div class="form-group">
-                                            <input type="text" name="name" placeholder="Enter Agent Name" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="select-box">
-                                                <select class="wide">
-                                                   <option data-display="All Categories">All Categories</option>
-                                                   <option value="1">New Arrival</option>
-                                                   <option value="2">Top Rated</option>
-                                                   <option value="3">Most Search</option>
-                                                   <option value="4">Recent Place</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="select-box">
-                                                <select class="wide">
-                                                   <option data-display="All Cities">All Cities</option>
-                                                   <option value="1">New York</option>
-                                                   <option value="2">California</option>
-                                                   <option value="3">London</option>
-                                                   <option value="4">Maxico</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="theme-btn btn-one">Search Agent</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="category-widget sidebar-widget">
-                                <div class="widget-title">
-                                    <h5>Status Of Property</h5>
-                                </div>
-                                <ul class="category-list clearfix">
-                                    <li><a href="agency-details.php">For Rent <span>(200)</span></a></li>
-                                    <li><a href="agency-details.php">For Sale <span>(700)</span></a></li>
-                                </ul>
-                            </div>
-                            <div class="featured-widget sidebar-widget">
-                                <div class="widget-title">
-                                    <h5>Featured Properties</h5>
-                                </div>
-                                <div class="single-item-carousel owl-carousel owl-theme owl-nav-none dots-style-one">
-                                    <div class="feature-block-one">
-                                        <div class="inner-box">
-                                            <div class="image-box">
-                                                <figure class="image"><img src="assets/images/feature/feature-1.jpg" alt=""></figure>
-                                                <div class="batch"><i class="icon-11"></i></div>
-                                                <span class="category">Featured</span>
-                                            </div>
-                                            <div class="lower-content">
-                                                <div class="title-text"><h4><a href="property-details.php">Villa on Grand Avenue</a></h4></div>
-                                                <div class="price-box clearfix">
-                                                    <div class="price-info">
-                                                        <h6>Start From</h6>
-                                                        <h4>$30,000.00</h4>
-                                                    </div>
-                                                </div>
-                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                                <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="feature-block-one">
-                                        <div class="inner-box">
-                                            <div class="image-box">
-                                                <figure class="image"><img src="assets/images/feature/feature-2.jpg" alt=""></figure>
-                                                <div class="batch"><i class="icon-11"></i></div>
-                                                <span class="category">Featured</span>
-                                            </div>
-                                            <div class="lower-content">
-                                                <div class="title-text"><h4><a href="property-details.php">Luxury Villa With Pool</a></h4></div>
-                                                <div class="price-box clearfix">
-                                                    <div class="price-info">
-                                                        <h6>Start From</h6>
-                                                        <h4>$30,000.00</h4>
-                                                    </div>
-                                                </div>
-                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                                <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="feature-block-one">
-                                        <div class="inner-box">
-                                            <div class="image-box">
-                                                <figure class="image"><img src="assets/images/feature/feature-3.jpg" alt=""></figure>
-                                                <div class="batch"><i class="icon-11"></i></div>
-                                                <span class="category">Featured</span>
-                                            </div>
-                                            <div class="lower-content">
-                                                <div class="title-text"><h4><a href="property-details.php">Contemporary Apartment</a></h4></div>
-                                                <div class="price-box clearfix">
-                                                    <div class="price-info">
-                                                        <h6>Start From</h6>
-                                                        <h4>$30,000.00</h4>
-                                                    </div>
-                                                </div>
-                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing sed.</p>
-                                                <div class="btn-box"><a href="property-details.php" class="theme-btn btn-two">See Details</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    // Get the current page number from URL, default is 1
+                    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                    if ($page < 1)
+                        $page = 1;
+
+                    // Calculate the starting record for the query
+                    $offset = ($page - 1) * $limit;
+
+                    // Get total records count
+                    $total_query = "SELECT COUNT(*) AS total FROM users WHERE role='agent'";
+                    $total_result = mysqli_query($conn, $total_query);
+                    $total_row = mysqli_fetch_assoc($total_result);
+                    $total_records = $total_row['total'];
+
+                    // Calculate total pages
+                    $total_pages = ceil($total_records / $limit);
+
+                    // Fetch records with pagination
+                    $query = "SELECT id, name, email, phone, user_img, occupation, company_name, facebook_link, twitter_link, linkedin_link 
+          FROM users WHERE role='agent' LIMIT $limit OFFSET $offset";
+                    $result = mysqli_query($conn, $query);
+
+                    // Showing dynamic results text
+                    $start_item = ($page - 1) * $limit + 1;
+                    $end_item = min($start_item + $limit - 1, $total_records);
+
+                    ?>
+
+                    <div class="item-shorting clearfix">
+                        <div class="left-column pull-left">
+                            <h5>Search Results: <span>Showing <?php echo $start_item; ?>-<?php echo $end_item; ?> of
+                                    <?php echo $total_records; ?> Listings</span></h5>
+                        </div>
+                        <div class="right-column pull-right clearfix">
+                            <!-- <div class="short-box clearfix">
+            <div class="select-box">
+                <select class="wide" id="sort-options">
+                    <option data-display="Sort by: Newest">Sort by: Newest</option>
+                    <option value="1">New Arrival</option>
+                    <option value="2">Top Rated</option>
+                    <option value="3">Offer Place</option>
+                    <option value="4">Most Place</option>
+                </select>
+            </div>
+        </div> -->
+                            <div class="short-menu clearfix">
+                                <button class="list-view on"><i class="icon-35"></i></button>
+                                <button class="grid-view"><i class="icon-36"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 col-md-12 col-sm-12 content-side">
-                        <div class="agency-content-side">
-                            <div class="item-shorting clearfix">
-                                <div class="left-column pull-left">
-                                    <h5>Search Reasults: <span>Showing 1-5 of 20 Listings</span></h5>
-                                </div>
-                                <div class="right-column pull-right clearfix">
-                                    <div class="short-box clearfix">
-                                        <div class="select-box">
-                                            <select class="wide">
-                                               <option data-display="Sort by: Newest">Sort by: Newest</option>
-                                               <option value="1">New Arrival</option>
-                                               <option value="2">Top Rated</option>
-                                               <option value="3">Offer Place</option>
-                                               <option value="4">Most Place</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="short-menu clearfix">
-                                        <button class="list-view on"><i class="icon-35"></i></button>
-                                        <button class="grid-view"><i class="icon-36"></i></button>
-                                    </div>
-                                </div>
-                            </div>
+
+                    <!-- Pagination logic remains here -->
+
+                    <script>
+                        // Sort functionality (basic example)
+                        document.getElementById('sort-options').addEventListener('change', function () {
+                            var sortValue = this.value;
+                            // Implement AJAX or page reload with sorting query
+                            console.log('Sorting by:', sortValue);
+                            // Use the value to update the query, reload the page, or fetch new results dynamically
+                        });
+                    </script>
+
+
+
+                    <?php
+                    // Fetch filters from GET request
+                    $search_name = isset($_GET['name']) ? mysqli_real_escape_string($conn, $_GET['name']) : '';
+                    $search_city = isset($_GET['city']) ? mysqli_real_escape_string($conn, $_GET['city']) : '';
+
+                    // Set the number of records per page
+                    $limit = 4;
+                    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                    if ($page < 1)
+                        $page = 1;
+                    $offset = ($page - 1) * $limit;
+
+                    // Build the WHERE clause dynamically
+                    $whereClause = "WHERE role='agent'";
+                    if ($search_name != '') {
+                        $whereClause .= " AND name LIKE '%$search_name%'";
+                    }
+                    if ($search_city != '') {
+                        $whereClause .= " AND city = '$search_city'";
+                    }
+
+                    // Get total records count
+                    $total_query = "SELECT COUNT(*) AS total FROM users $whereClause";
+                    $total_result = mysqli_query($conn, $total_query);
+                    $total_row = mysqli_fetch_assoc($total_result);
+                    $total_records = $total_row['total'];
+                    $total_pages = ceil($total_records / $limit);
+
+                    // Fetch records with pagination
+                    $query = "SELECT id, name, email, phone, user_img, occupation, company_name, facebook_link, twitter_link, linkedin_link, city 
+          FROM users $whereClause LIMIT $limit OFFSET $offset";
+                    $result = mysqli_query($conn, $query);
+
+                    // Display agents
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $id = $row['id'];
+                            $name = $row['name'];
+                            $email = $row['email'];
+                            $phone = $row['phone'];
+                            $user_img = $row['user_img'];
+                            $company_name = $row['occupation'];
+                            $facebook = $row['facebook_link'];
+                            $twitter = $row['twitter_link'];
+                            $linkedin = $row['linkedin_link'];
+                            $city = $row['city'];
+                            ?>
                             <div class="wrapper list">
                                 <div class="agents-list-content list-item">
                                     <div class="agents-block-one">
                                         <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-1.jpg" alt=""></figure>
+                                            <figure class="image-box"><img src="assets/images/users/<?php echo $user_img ?>"
+                                                    alt=""></figure>
                                             <div class="content-box">
                                                 <div class="upper clearfix">
                                                     <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Realhome Estate</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
+                                                        <h4><a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a></h4>
+                                                        <span class="designation"><?php echo $company_name ?> Real Estate
+                                                            Agent</span>
                                                     </div>
                                                     <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
+                                                        <li><a href="<?php echo $facebook ?>"><i
+                                                                    class="fab fa-facebook-f"></i></a></li>
+                                                        <li><a href="<?php echo $twitter ?>"><i class="fab fa-twitter"></i></a>
+                                                        </li>
+                                                        <li><a href="<?php echo $linkedin ?>"><i
+                                                                    class="fab fa-linkedin-in"></i></a></li>
                                                     </ul>
                                                 </div>
                                                 <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
+                                                    <p><?php echo $name ?></p>
                                                 </div>
                                                 <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:info@realhome.com">info@realhome.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
+                                                    <li><i class="fab fa fa-envelope"></i><a
+                                                            href="mailto:<?php echo $email ?>"><?php echo $email ?></a></li>
+                                                    <li><i class="fab fa fa-phone"></i><a
+                                                            href="tel:<?php echo $phone ?>"><?php echo $phone ?></a></li>
                                                 </ul>
                                                 <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
+                                                    <a href="agency-details.php?id=<?php echo $id; ?>"
+                                                        class="theme-btn btn-two">View Profile</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="agents-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-2.jpg" alt=""></figure>
-                                            <div class="content-box">
-                                                <div class="upper clearfix">
-                                                    <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Housetlk Property</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
-                                                    </div>
-                                                    <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
-                                                </div>
-                                                <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:info@housetlk.com">info@housetlk.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                </ul>
-                                                <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="agents-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-3.jpg" alt=""></figure>
-                                            <div class="content-box">
-                                                <div class="upper clearfix">
-                                                    <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Home & Garden</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
-                                                    </div>
-                                                    <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
-                                                </div>
-                                                <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:info@homegarden.com">info@homegarden.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                </ul>
-                                                <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="agents-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-4.jpg" alt=""></figure>
-                                            <div class="content-box">
-                                                <div class="upper clearfix">
-                                                    <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Property Company</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
-                                                    </div>
-                                                    <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
-                                                </div>
-                                                <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:info@property.com">info@property.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                </ul>
-                                                <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="agents-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-5.jpg" alt=""></figure>
-                                            <div class="content-box">
-                                                <div class="upper clearfix">
-                                                    <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Realty Investment</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
-                                                    </div>
-                                                    <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
-                                                </div>
-                                                <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:info@investment.com">info@investment.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                </ul>
-                                                <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="agents-block-one">
-                                        <div class="inner-box">
-                                            <figure class="image-box"><img src="assets/images/resource/agency-6.jpg" alt=""></figure>
-                                            <div class="content-box">
-                                                <div class="upper clearfix">
-                                                    <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php">Propertydeal</a></h4>
-                                                        <span class="designation">Modern House Real Estate Agent</span>
-                                                    </div>
-                                                    <ul class="social-list pull-right clearfix">
-                                                        <li><a href="agents-list.php"><i class="fab fa-facebook-f"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-twitter"></i></a></li>
-                                                        <li><a href="agents-list.php"><i class="fab fa-linkedin-in"></i></a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="text">
-                                                    <p>Get the oars in the water and start rowing. Execution is the single biggest factor...</p>
-                                                </div>
-                                                <ul class="info clearfix">
-                                                    <li><i class="fab fa fa-envelope"></i><a href="mailto:jennifer@realshed.com">jennifer@realshed.com</a></li>
-                                                    <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                </ul>
-                                                <div class="btn-box">
-                                                    <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
+
                                 </div>
                                 <div class="agents-grid-content">
                                     <div class="row clearfix">
                                         <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
                                             <div class="agents-block-two">
                                                 <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-1.png" alt=""></figure>
+                                                    <figure class="image-box"><img
+                                                            src="assets/images/users/<?php echo $user_img ?>" alt=""></figure>
                                                     <div class="content-box">
                                                         <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Realhome Estate</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
+                                                            <h4><a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a></h4>
+                                                            <span class="designation"><?php echo $company_name ?> Real Estate
+                                                                Agent</span>
                                                         </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
+                                                        <!-- <div class="text">
+                                                            <p><?php echo $name ?></p>
+                                                        </div> -->
                                                         <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@realhome.com">info@realhome.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
+                                                            <li><i class="fab fa fa-envelope"></i><a
+                                                                    href="mailto:<?php echo $email ?>"><?php echo $email ?></a>
+                                                            </li>
+                                                            <li><i class="fab fa fa-phone"></i><a
+                                                                    href="tel:<?php echo $phone ?>"><?php echo $phone ?></a>
+                                                            </li>
                                                         </ul>
                                                         <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
+                                                            <a href="agency-details.php?id=<?php echo $id; ?>"
+                                                                class="theme-btn btn-two">View Profile</a>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
-                                            <div class="agents-block-two">
-                                                <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-2.png" alt=""></figure>
-                                                    <div class="content-box">
-                                                        <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Housetlk Property</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
-                                                        </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
-                                                        <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@housetlk.com">info@housetlk.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                        </ul>
-                                                        <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
-                                            <div class="agents-block-two">
-                                                <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-3.png" alt=""></figure>
-                                                    <div class="content-box">
-                                                        <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Home & Garden</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
-                                                        </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
-                                                        <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@homegarden.com">info@homegarden.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                        </ul>
-                                                        <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
-                                            <div class="agents-block-two">
-                                                <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-4.png" alt=""></figure>
-                                                    <div class="content-box">
-                                                        <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Property Company</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
-                                                        </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
-                                                        <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@property.com">info@property.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                        </ul>
-                                                        <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
-                                            <div class="agents-block-two">
-                                                <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-5.png" alt=""></figure>
-                                                    <div class="content-box">
-                                                        <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Realty Investment</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
-                                                        </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
-                                                        <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@investment.com">info@investment.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                        </ul>
-                                                        <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12 agents-block">
-                                            <div class="agents-block-two">
-                                                <div class="inner-box">
-                                                    <figure class="image-box"><img src="assets/images/resource/agency-6.png" alt=""></figure>
-                                                    <div class="content-box">
-                                                        <div class="title-inner">
-                                                            <h4><a href="agency-details.php">Propertydeal</a></h4>
-                                                            <span class="designation">Modern House Real Estate Agent</span>
-                                                        </div>
-                                                        <div class="text">
-                                                            <p>Get the oars in the water and start rowing execution.</p>
-                                                        </div>
-                                                        <ul class="info clearfix">
-                                                            <li><i class="fab fa fa-envelope"></i><a href="mailto:info@propertydeal.com">info@propertydeal.com</a></li>
-                                                            <li><i class="fab fa fa-phone"></i><a href="tel:03030571965">030 3057 1965</a></li>
-                                                        </ul>
-                                                        <div class="btn-box">
-                                                            <a href="profile.php" class="theme-btn btn-two">View Profile</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+
+
+
+
+
                                     </div>
                                 </div>
                             </div>
-                            <div class="pagination-wrapper">
-                                <ul class="pagination clearfix">
-                                    <li><a href="agency-list.php" class="current">1</a></li>
-                                    <li><a href="agency-list.php">2</a></li>
-                                    <li><a href="agency-list.php">3</a></li>
-                                    <li><a href="agency-list.php"><i class="fas fa-angle-right"></i></a></li>
-                                </ul>
-                            </div>
+
+                            <?php
+                        }
+                    } else {
+                        echo "No agents found.";
+                    }
+                    ?>
+
+
+
+                    <!-- Pagination -->
+                    <?php if ($total_pages > 1): ?>
+                        <div class="pagination-wrapper">
+                            <ul class="pagination clearfix">
+                                <?php if ($page > 1): ?>
+                                    <li><a href="?page=<?php echo ($page - 1); ?>"><i class="fas fa-angle-left"></i></a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li><a href="?page=<?php echo $i; ?>"
+                                            class="<?php echo ($page == $i) ? 'current' : ''; ?>"><?php echo $i; ?></a></li>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $total_pages): ?>
+                                    <li><a href="?page=<?php echo ($page + 1); ?>"><i class="fas fa-angle-right"></i></a></li>
+                                <?php endif; ?>
+                            </ul>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
-        </section>
-        <!-- agents-page-section end -->
+        </div>
+    </div>
+</section>
+<!-- agents-page-section end -->
 
-        <?php include './includes/footer.php'; ?>
+<?php include './includes/footer.php'; ?>

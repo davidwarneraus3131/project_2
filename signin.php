@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['role'] = $user['role'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['user_img'] = $user['user_img'];
 
             $message = "Login successful! Redirecting...";
             $message_type = "success";
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } elseif ($user['role'] == 'agent') {
                 $redirectUrl = "agent/dashboard.php";
             }elseif ($user['role'] == 'user') {
-                $redirectUrl = "user/dashboard.php";
+                $redirectUrl = "index.php";
             }
 
             echo "<script>

@@ -1,25 +1,31 @@
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <?php 
 include './includes/header.php'; 
 
-
+// Check if a status and message session is set
 if (isset($_SESSION['status']) && isset($_SESSION['message'])) {
     $status = $_SESSION['status'];
     $message = $_SESSION['message'];
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+
+    // Display SweetAlert after page load
     echo "<script>
-        Swal.fire({
-            icon: '$status',
-            title: '$message',
-            showConfirmButton: false,
-            timer: 3000
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: '$status',
+                title: '$message',
+                showConfirmButton: false,
+                timer: 3000
+            });
         });
     </script>";
+
+    // Unset session variables after displaying
     unset($_SESSION['status']);
     unset($_SESSION['message']);
 }
 ?>
+
 
 
         <!--Page Title-->
@@ -50,7 +56,7 @@ if (isset($_SESSION['status']) && isset($_SESSION['message'])) {
                             <div class="inner-box">
                                 <div class="icon-box"><i class="icon-32"></i></div>
                                 <h4>Email Address</h4>
-                                <p><a href="mailto:info@example.com">info@example.com</a><br /><a href="mailto:info@example.com">info@example.com</a></p>
+                                <p><a href="poom">info@example.com</a><br /><a href="mailto:info@example.com">info@example.com</a></p>
                             </div>
                         </div>
                     </div>
@@ -89,7 +95,7 @@ if (isset($_SESSION['status']) && isset($_SESSION['message'])) {
                                 <h2>Contact Us</h2>
                             </div>
                             <div class="form-inner">
-                                <form method="post" action="sendemail.php" id="contact-form"> 
+                                <form method="post" action="contact_mail.php" id="contact-form"> 
                                     <div class="row clearfix">
                                         <div class="col-lg-6 col-md-6 col-sm-12 form-group">
                                             <input type="text" name="username" placeholder="Your Name" required="">
@@ -115,26 +121,26 @@ if (isset($_SESSION['status']) && isset($_SESSION['message'])) {
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-12 col-sm-12 map-column">
-                        <div class="google-map-area">
-                            <div 
-                                class="google-map" 
-                                id="contact-google-map" 
-                                data-map-lat="40.712776" 
-                                data-map-lng="-74.005974" 
-                                data-icon-path="assets/images/icons/map-marker.png"  
-                                data-map-title="Brooklyn, New York, United Kingdom" 
-                                data-map-zoom="12" 
-                                data-markers='{
-                                    "marker-1": [40.712776, -74.005974, "<h4>Branch Office</h4><p>77/99 New York</p>","assets/images/icons/map-marker.png"]
-                                }'>
+    <div class="google-map-area">
+        <div 
+            class="google-map" 
+            id="contact-google-map" 
+            data-map-lat="13.0827" 
+            data-map-lng="80.2707" 
+            data-icon-path="assets/images/icons/map-marker.png"  
+            data-map-title="Chennai, India" 
+            data-map-zoom="12" 
+            data-markers='{
+                "marker-1": [13.0827, 80.2707, "<h4>Chennai Office</h4><p>Example Address, Chennai</p>", "assets/images/icons/map-marker.png"]
+            }'>
+        </div>
+    </div>
+</div>
 
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
         <!-- contact-section end -->
-
+ 
 
         <?php include './includes/footer.php'; ?>
