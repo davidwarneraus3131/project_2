@@ -28,10 +28,28 @@
 //         JOIN users ON properties.agent_id = users.id 
 //         WHERE properties.property_status = 0";
 
-$sql = "SELECT properties.*, users.* 
-        FROM properties 
-        JOIN users ON properties.agent_id = users.id
-        WHERE properties.property_status = 1";
+
+
+
+
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
+$agent_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0; 
+
+// Fetch properties based on user role
+if ($role === 'admin') {
+    $sql = "SELECT properties.*, users.* 
+    FROM properties 
+    JOIN users ON properties.agent_id = users.id
+    WHERE properties.property_status = 1";
+
+} elseif ($role === 'agent') {
+    $sql = "SELECT * FROM properties WHERE agent_id = $agent_id AND property_status = 1"; 
+} else {
+    echo "Unauthorized access!";
+    exit;
+}
+
+
 
 
 
@@ -69,13 +87,18 @@ $result = $conn->query($sql);
                             <table id="property-table" class="display table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Agent Name</th>
+                                    <?php if ($role === 'admin') { ?>
+            <th>Agent Name</th>
+        <?php } ?>
                                         <th>Property Image</th>
                                         <th>Property Name</th>
                                         <th>Price</th>
                                         <th>Location</th>
                                         <th>square_feet</th>
-                                        <th> Property status</th>
+                                      
+                                        <?php if ($role === 'admin') { ?>
+            <th>Property status</th>
+        <?php } ?>
                                         <th>country</th>
                                         
                                         
@@ -85,8 +108,11 @@ $result = $conn->query($sql);
                                 <tbody>
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-
+                                        <?php if ($role === 'admin') { ?>
                                         <td><?= htmlspecialchars($row['name'] ?? '') ?></td>
+
+                                        <?php } ?>
+
                                             <td>    <img src="<?= "../../assets/images/property/" . htmlspecialchars($row['property_img1'] ?? '') ?>" alt="Property Image" width="100">
                                             </td>
 
@@ -94,6 +120,9 @@ $result = $conn->query($sql);
                                             <td><?= htmlspecialchars($row['price'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['location'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['square_feet'] ?? '') ?></td>
+
+
+                                            <?php if ($role === 'admin') { ?>
                                             <td>
     <button class="btn btn-sm <?= $row['property_status'] == 0 ? 'btn-success' : 'btn-warning' ?> toggleStatus" 
         data-id="<?= $row['id'] ?>" 
@@ -101,6 +130,7 @@ $result = $conn->query($sql);
         <?= $row['property_status'] == 0 ? 'Approve' : 'Reject' ?>
     </button>
 </td>
+<?php } ?>
 
                                             <td><?= htmlspecialchars($row['country'] ?? '') ?></td>
                                             
@@ -176,10 +206,6 @@ $(document).ready(function () {
         });
     });
 });
-
-
-
-
 
 
 

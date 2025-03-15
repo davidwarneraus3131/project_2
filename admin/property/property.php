@@ -1,4 +1,5 @@
 <?php
+
  include(__DIR__ . '/../../database/db.php'); 
  include '../admin_header.php';
   ?>
@@ -22,8 +23,20 @@
 <?php
 
 
-// Fetch users
-$sql = "SELECT * FROM properties ";
+
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
+$agent_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0; 
+
+// Fetch properties based on user role
+if ($role === 'admin') {
+    $sql = "SELECT * FROM properties"; // Admin sees all properties
+} elseif ($role === 'agent') {
+    $sql = "SELECT * FROM properties WHERE agent_id = $agent_id"; 
+} else {
+    echo "Unauthorized access!";
+    exit;
+}
+
 $result = $conn->query($sql);
 ?>
 
@@ -511,7 +524,6 @@ $(document).ready(function() {
 
 });
 </script>
-
 
 
 

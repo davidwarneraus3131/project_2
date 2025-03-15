@@ -1,6 +1,17 @@
+<?php
+session_start();
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: signin.php");
+    exit();
+}
+?>
+
 <?php include './includes/header.php';
 include("./database/db.php");
 ?>
+
 
 <!--Page Title-->
 <section class="page-title centred" style="background-image: url(assets/images/background/page-title.jpg);">
@@ -571,7 +582,7 @@ $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phon
                     ?>
 
 
-                    <div class="category-widget sidebar-widget">
+                    <!-- <div class="category-widget sidebar-widget">
                         <div class="widget-title">
                             <h5>Status Of Property</h5>
                         </div>
@@ -585,7 +596,7 @@ $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phon
                                 </li>
                             <?php endwhile; ?>
                         </ul>
-                    </div>
+                    </div> -->
                     <div class="featured-widget sidebar-widget">
                         <div class="widget-title">
                             <h5>Featured Properties</h5>
@@ -593,7 +604,11 @@ $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phon
                         <div class="single-item-carousel owl-carousel owl-theme owl-nav-none dots-style-one">
 
                             <?php
-                            $sql = "SELECT * FROM properties WHERE featured = 1";
+                            $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+               users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
+        FROM properties 
+        JOIN users ON properties.agent_id = users.id 
+        WHERE  featured = 1 limit 3";
                             $result = mysqli_query($conn, $sql);
                             // Check if there are any results
                             if (mysqli_num_rows($result) > 0) {
@@ -602,7 +617,7 @@ $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phon
                                     $property_name = $row['property_name'];
                                     $price = $row['price'];
                                     $description = $row['description'];
-                                    $agent_name = $row['agent_name'];
+                                    $agent_name = $row['name'];
                                     $property_img = $row['property_img1'];
                                     $beds = $row['beds'];
                                     $baths = $row['baths'];

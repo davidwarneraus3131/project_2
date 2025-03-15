@@ -1,4 +1,5 @@
 <?php
+session_start();
  include(__DIR__ . '/../../database/db.php'); 
 
 // Function to upload images
@@ -16,6 +17,8 @@ function uploadFile($fileInputName) {
 }
 
 // Get form data
+$agent_id=$_SESSION['user_id'];
+
 $property_name = $_POST['property_name'];
 $price = $_POST['price'];
 $location = $_POST['location'];
@@ -43,8 +46,8 @@ $property_img5 = uploadFile('property_img5');
 $property_img6 = uploadFile('property_img6');
 
 // Insert into database
-$sql = "INSERT INTO properties (property_name, price, location, description, beds, baths, square_feet, country, state_county, city, address, zip_postal_code, rooms, garage_size, year_built, property_type, status, property_img1, property_img2, property_img3, property_img4, property_img5, property_img6) 
-VALUES ('$property_name', '$price', '$location', '$description', '$beds', '$baths', '$square_feet', '$country', '$state_county', '$city', '$address', '$zip_postal_code', '$rooms', '$garage_size', '$year_built', '$property_type', '$status', '$property_img1', '$property_img2', '$property_img3', '$property_img4', '$property_img5', '$property_img6')";
+$sql = "INSERT INTO properties (property_name, price, location, description, beds, baths, square_feet, country, state_county, city, address, zip_postal_code, rooms, garage_size, year_built, property_type, status, property_img1, property_img2, property_img3, property_img4, property_img5, property_img6,agent_id) 
+VALUES ('$property_name', '$price', '$location', '$description', '$beds', '$baths', '$square_feet', '$country', '$state_county', '$city', '$address', '$zip_postal_code', '$rooms', '$garage_size', '$year_built', '$property_type', '$status', '$property_img1', '$property_img2', '$property_img3', '$property_img4', '$property_img5', '$property_img6', '$agent_id')";
 
 if ($conn->query($sql) === TRUE) {
     echo json_encode(["status" => "success", "message" => "Property added successfully!"]);

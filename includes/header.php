@@ -1,36 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-<title>Shahid Real Estate</title>
+    <title>Shahid Real Estate</title>
 
-<!-- Fav Icon -->
-<link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <!-- Fav Icon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
 
-<!-- Stylesheets -->
-<link href="./assets/css/font-awesome-all.css" rel="stylesheet">
-<link href="./assets/css/flaticon.css" rel="stylesheet">
-<link href="./assets/css/owl.css" rel="stylesheet">
-<link href="./assets/css/bootstrap.css" rel="stylesheet">
-<link href="./assets/css/jquery.fancybox.min.css" rel="stylesheet">
-<link href="./assets/css/animate.css" rel="stylesheet">
-<link href="./assets/css/jquery-ui.css" rel="stylesheet">
-<link href="./assets/css/nice-select.css" rel="stylesheet">
-<link href="./assets/css/color/theme-color.css" id="jssDefault" rel="stylesheet">
-<link href="./assets/css/switcher-style.css" rel="stylesheet">
-<link href="./assets/css/style.css" rel="stylesheet">
-<link href="./assets/css/responsive.css" rel="stylesheet">
+    <!-- Stylesheets -->
+    <link href="./assets/css/font-awesome-all.css" rel="stylesheet">
+    <link href="./assets/css/flaticon.css" rel="stylesheet">
+    <link href="./assets/css/owl.css" rel="stylesheet">
+    <link href="./assets/css/bootstrap.css" rel="stylesheet">
+    <link href="./assets/css/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="./assets/css/animate.css" rel="stylesheet">
+    <link href="./assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="./assets/css/nice-select.css" rel="stylesheet">
+    <link href="./assets/css/color/theme-color.css" id="jssDefault" rel="stylesheet">
+    <link href="./assets/css/switcher-style.css" rel="stylesheet">
+    <link href="./assets/css/style.css" rel="stylesheet">
+    <link href="./assets/css/responsive.css" rel="stylesheet">
+
+
+    <!-- razorpay payment integration -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let buttons = document.querySelectorAll(".razorpay-btn");
+
+        buttons.forEach(button => {
+            button.addEventListener("click", function () {
+                let amount = this.getAttribute("data-amount");
+                let plan = this.getAttribute("data-plan");
+
+                var options = {
+                    "key": "rzp_test_kjkJVOwg4zthTS", 
+                    "amount": amount * 100, 
+                    "currency": "INR",
+                    "name": "Real Estate",
+                    "description": plan + " Subscription",
+                    "handler": function (response) {
+                        // Call the backend to save payment details
+                        fetch("../payment_success.php", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                payment_id: response.razorpay_payment_id,
+                                amount: amount,
+                                plan: plan,
+                                username: "sridhar" 
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            alert("Payment Successful! Transaction ID: " + response.razorpay_payment_id);
+                            location.reload();
+                        });
+                    },
+                    "theme": { "color": "#F37254" }
+                };
+
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            });
+        });
+    });
+</script>
+
 
 </head>
 
 
 <!-- page wrapper -->
+
 <body>
 
     <div class="boxed_wrapper">
@@ -69,7 +120,7 @@
                                 d
                             </span>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +152,7 @@
                             <a href="javascript: void(0)" data-theme="orange" class="orange-color"></a>
                         </li>
                     </ul>
-                </div> 
+                </div>
             </div>
         </div>
         <!-- end switcher menu -->
@@ -115,7 +166,7 @@
                     <div class="left-column pull-left">
                         <ul class="info clearfix">
                             <li><i class="far fa-map-marker-alt"></i>Discover St, New York, NY 10012, USA</li>
-                            <li><i class="far fa-clock"></i>Mon - Sat  9.00 - 18.00</li>
+                            <li><i class="far fa-clock"></i>Mon - Sat 9.00 - 18.00</li>
                             <li><i class="far fa-phone"></i><a href="tel:2512353256">+251-235-3256</a></li>
                         </ul>
                     </div>
@@ -131,27 +182,28 @@
 
 
 
-if (isset($_SESSION['user_id'])) {
-    // Fetch user details from the session
-    $user_name = $_SESSION['name'];  
-    $user_img = $_SESSION['user_img'];  
-?>
-    <div class="sign-box">
-        <a href="profile.php">
-            <img src="assets/images/users/<?php echo $user_img; ?>" alt="User Image" style="width:40px; height:40px; border-radius:50%;">
-            <?php echo $user_name; ?>
-        </a>
-        <a href="./logout.php" class="logout-btn" style="color:red; margin-left:10px;">Logout</a>
-    </div>
-<?php
-} else {
-?>
-    <div class="sign-box">
-        <a href="signin.php"><i class="fas fa-user"></i> Sign In</a>
-    </div>
-<?php
-}
-?>
+                        if (isset($_SESSION['user_id'])) {
+                            // Fetch user details from the session
+                            $user_name = $_SESSION['name'];
+                            $user_img = $_SESSION['user_img'];
+                            ?>
+                            <div class="sign-box">
+                                <a href="profile.php">
+                                    <img src="assets/images/users/<?php echo $user_img; ?>" alt="User Image"
+                                        style="width:40px; height:40px; border-radius:50%;">
+                                    <?php echo $user_name; ?>
+                                </a>
+                                <a href="./logout.php" class="logout-btn" style="color:red; margin-left:10px;">Logout</a>
+                            </div>
+                            <?php
+                        } else {
+                            ?>
+                            <div class="sign-box">
+                                <a href="signin.php"><i class="fas fa-user"></i> Sign In</a>
+                            </div>
+                            <?php
+                        }
+                        ?>
 
                     </div>
                 </div>
@@ -161,7 +213,8 @@ if (isset($_SESSION['user_id'])) {
                 <div class="outer-box">
                     <div class="main-box">
                         <div class="logo-box">
-                            <figure class="logo"><a href="index.php"><img src="assets/images/logo.png" alt=""></a></figure>
+                            <figure class="logo"><a href="index.php"><img src="assets/images/logo.png" alt=""></a>
+                            </figure>
                         </div>
                         <div class="menu-area clearfix">
                             <!--Mobile Navigation Toggler-->
@@ -174,20 +227,20 @@ if (isset($_SESSION['user_id'])) {
                                 <div class="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                                     <ul class="navigation clearfix">
                                         <li class=""><a href="index.php"><span>Home</span></a>
-                                           
+
                                         </li>
-                                         
+
                                         <li class=""><a href="property-list.php"><span>Property</span></a>
-                                            
+
                                         </li>
-                                        
+
                                         <li class=""><a href="agency-list.php"><span>Agency</span></a>
-                                            
+
                                         </li>
                                         <li class=""><a href="blog.php"><span>Blog</span></a>
-                                            
-                                        </li>  
-                                        <li><a href="contact.php"><span>Contact</span></a></li>   
+
+                                        </li>
+                                        <li><a href="contact.php"><span>Contact</span></a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -204,7 +257,8 @@ if (isset($_SESSION['user_id'])) {
                 <div class="outer-box">
                     <div class="main-box">
                         <div class="logo-box">
-                            <figure class="logo"><a href="index.php"><img src="assets/images/logo.png" alt=""></a></figure>
+                            <figure class="logo"><a href="index.php"><img src="assets/images/logo.png" alt=""></a>
+                            </figure>
                         </div>
                         <div class="menu-area clearfix">
                             <nav class="main-menu clearfix">
@@ -224,10 +278,11 @@ if (isset($_SESSION['user_id'])) {
         <div class="mobile-menu">
             <div class="menu-backdrop"></div>
             <div class="close-btn"><i class="fas fa-times"></i></div>
-            
+
             <nav class="menu-box">
                 <div class="nav-logo"><a href="index.php"><img src="assets/images/logo-2.png" alt="" title=""></a></div>
-                <div class="menu-outer"><!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header--></div>
+                <div class="menu-outer"><!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
+                </div>
                 <div class="contact-info">
                     <h4>Contact Info</h4>
                     <ul>
@@ -247,3 +302,47 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             </nav>
         </div><!-- End Mobile Menu -->
+
+
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/67ce72772dc557190e95c996/1ilv6u95h';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+
+
+
+        <!-- for inspect block securtiy reasons -->
+        <!-- <script>
+            document.addEventListener('contextmenu', function (event) {
+                event.preventDefault();
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "F12" ||
+                    (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "J")) ||
+                    (event.ctrlKey && event.key === "U")) {
+                    event.preventDefault();
+                }
+            });
+        </script>
+
+
+        <style>
+            body {
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+        </style> -->

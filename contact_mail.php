@@ -44,12 +44,71 @@ if (isset($_POST['submit-form'])) {
         
             // Recipients
             $mail->setFrom('potterharry623017@gmail.com', 'Shahith Real Estate');
-            $mail->addAddress('potterharry623016@gmail.com', 'Harry Potter'); 
+            $mail->addAddress('potterharry623017@gmail.com', 'Harry Potter'); 
         
             // Content
             $mail->isHTML(true);
             $mail->Subject = $subject;
-            $mail->Body    = "Name: $username<br>Email: $email<br>Phone: $phone<br>Message: $message";
+            $mail->Body    = "
+            
+            <html>
+        <head>
+            <style>
+                .email-container {
+                    font-family: Arial, sans-serif;
+                    background: #f9f9f9;
+                    padding: 20px;
+                    text-align: center;
+                }
+                .email-header {
+                    background: #004080;
+                    color: #ffffff;
+                    padding: 20px;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .email-body {
+                    background: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 10px #ddd;
+                    text-align: left;
+                }
+                .email-footer {
+                    text-align: center;
+                    padding: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+                .footer-icons img {
+                    width: 24px;
+                    margin: 0 5px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='email-container'>
+                <div class='email-header'>Shahith Real Estate</div>
+                <div class='email-body'>
+                    <p><strong>Name:</strong> $username</p>
+                    <p><strong>Email:</strong> $email</p>
+                    <p><strong>Phone:</strong> $phone</p>
+                    <p><strong>Subject:</strong> $subject</p>
+                    <p><strong>Message:</strong><br>$message</p>
+                    <img src='https://www.realestatelogo.com/example.jpg' alt='Real Estate' width='100%'>
+                </div>
+                <div class='email-footer'>
+                    <p>Thank you for reaching out to Shahith Real Estate. Our team will contact you soon.</p>
+                    <div class='footer-icons'>
+                        <a href='https://facebook.com'><img src='https://img.icons8.com/color/48/000000/facebook-new.png'/></a>
+                        <a href='https://instagram.com'><img src='https://img.icons8.com/color/48/000000/instagram-new.png'/></a>
+                        <a href='https://linkedin.com'><img src='https://img.icons8.com/color/48/000000/linkedin.png'/></a>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+            ";
         
             // Send the email
             if ($mail->send()) {

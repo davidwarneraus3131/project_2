@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($user['role'] == 'admin') {
                 $redirectUrl = "admin/dashboard.php";
             } elseif ($user['role'] == 'agent') {
-                $redirectUrl = "agent/dashboard.php";
+                $redirectUrl = "admin/property/property.php";
             }elseif ($user['role'] == 'user') {
                 $redirectUrl = "index.php";
             }

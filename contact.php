@@ -1,6 +1,5 @@
-
-
 <?php 
+session_start();
 include './includes/header.php'; 
 
 // Check if a status and message session is set

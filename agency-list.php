@@ -1,6 +1,7 @@
-<?php include './includes/header.php';
+<?php
+session_start();
+include("./includes/header.php");
 include("./database/db.php");
-
 ?>
 
 <!--Page Title-->
@@ -67,7 +68,7 @@ include("./database/db.php");
 
 
 
-                    <div class="category-widget sidebar-widget">
+                    <!-- <div class="category-widget sidebar-widget">
                         <div class="widget-title">
                             <h5>Status Of Property</h5>
                         </div>
@@ -81,7 +82,7 @@ include("./database/db.php");
                                 </li>
                             <?php endwhile; ?>
                         </ul>
-                    </div>
+                    </div> -->
 
 
 
@@ -94,7 +95,13 @@ include("./database/db.php");
 
 
                             <?php
-                            $sql = "SELECT * FROM properties WHERE featured = 1";
+                            $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+                            users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
+                            FROM properties 
+                            JOIN users ON properties.agent_id = users.id 
+                            WHERE featured = 1 
+                            LIMIT 3";
+             
                             $result = mysqli_query($conn, $sql);
                             // Check if there are any results
                             if (mysqli_num_rows($result) > 0) {
@@ -103,7 +110,7 @@ include("./database/db.php");
                                     $property_name = $row['property_name'];
                                     $price = $row['price'];
                                     $description = $row['description'];
-                                    $agent_name = $row['agent_name'];
+                                    $agent_name = $row['name'];
                                     $property_img = $row['property_img1'];
                                     $beds = $row['beds'];
                                     $baths = $row['baths'];
@@ -136,8 +143,18 @@ include("./database/db.php");
                                                     </div>
                                                 </div>
                                                 <p><?php echo $description ?></p>
-                                                <div class="btn-box"><a href="property-details.php?id=<?php echo $row['id']; ?>"
-                                                        class="theme-btn btn-two">See Details</a></div>
+                                                <div class="btn-box">
+
+
+
+                                                    <?php if (isset($_SESSION['user_id'])) { ?>
+            <a href="property-details.php?id=<?php echo $row['id']; ?>" class="theme-btn btn-two">See Details</a>
+        <?php } else { ?>
+            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
+        <?php } ?>
+                                                    
+                                                    
+                                                    </div>
                                             </div>
                                         </div>
 
@@ -285,7 +302,19 @@ include("./database/db.php");
                                             <div class="content-box">
                                                 <div class="upper clearfix">
                                                     <div class="title-inner pull-left">
-                                                        <h4><a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a></h4>
+
+
+                                                        <h4>
+                                                            <a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a>
+
+                                                            <?php if (isset($_SESSION['user_id'])) { ?>
+            <a href="agency-details.php?id=<?php echo  $id; ?>"><? echo $name?></a>
+        <?php } else { ?>
+            <a href="#"  onclick="showLoginAlert()"><? echo $name?></a>
+        <?php } ?>
+                                                        
+                                                        
+                                                        </h4>
                                                         <span class="designation"><?php echo $company_name ?> Real Estate
                                                             Agent</span>
                                                     </div>
@@ -308,8 +337,14 @@ include("./database/db.php");
                                                             href="tel:<?php echo $phone ?>"><?php echo $phone ?></a></li>
                                                 </ul>
                                                 <div class="btn-box">
-                                                    <a href="agency-details.php?id=<?php echo $id; ?>"
-                                                        class="theme-btn btn-two">View Profile</a>
+
+
+                                                        <?php if (isset($_SESSION['user_id'])) { ?>
+            <a href="agency-details.php?id=<?php echo $id; ?>" class="theme-btn btn-two">View Profile</a>
+        <?php } else { ?>
+            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">View Profile</a>
+        <?php } ?>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -326,7 +361,18 @@ include("./database/db.php");
                                                             src="assets/images/users/<?php echo $user_img ?>" alt=""></figure>
                                                     <div class="content-box">
                                                         <div class="title-inner">
-                                                            <h4><a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a></h4>
+                                                            <h4>
+                                                                
+                                                            <a href="agency-details.php?id=<?php echo $id; ?>"><?php echo $name ?></a>
+
+<?php if (isset($_SESSION['user_id'])) { ?>
+<a href="agency-details.php?id=<?php echo  $id; ?>"><? echo $name?></a>
+<?php } else { ?>
+<a href="#"  onclick="showLoginAlert()"><? echo $name?></a>
+<?php } ?>
+                                                        
+                                                        
+                                                        </h4>
                                                             <span class="designation"><?php echo $company_name ?> Real Estate
                                                                 Agent</span>
                                                         </div>
@@ -342,17 +388,18 @@ include("./database/db.php");
                                                             </li>
                                                         </ul>
                                                         <div class="btn-box">
-                                                            <a href="agency-details.php?id=<?php echo $id; ?>"
-                                                                class="theme-btn btn-two">View Profile</a>
+
+                                                        <?php if (isset($_SESSION['user_id'])) { ?>
+            <a href="agency-details.php?id=<?php echo $id; ?>" class="theme-btn btn-two">View Profile</a>
+        <?php } else { ?>
+            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">View Profile</a>
+        <?php } ?>
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
-
-
-
 
                                     </div>
                                 </div>
@@ -394,3 +441,23 @@ include("./database/db.php");
 <!-- agents-page-section end -->
 
 <?php include './includes/footer.php'; ?>
+
+ <!-- see details button authorize -->
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function showLoginAlert() {
+        Swal.fire({
+            title: "Login Required",
+            text: "You must be logged in to view Agent  details!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Login Now",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "signin.php";
+            }
+        });
+    }
+</script>

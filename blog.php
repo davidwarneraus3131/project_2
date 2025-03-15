@@ -1,7 +1,10 @@
-<?php include './includes/header.php';
+<?php 
+session_start();
+include './includes/header.php';
 include("./database/db.php");
-
 ?>
+
+
 
 
 <!--Page Title-->
