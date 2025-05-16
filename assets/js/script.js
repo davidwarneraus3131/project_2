@@ -306,7 +306,7 @@
 			margin:30,
 			nav:true,
 			smartSpeed: 500,
-			autoplay: 5000,
+			autoplay: 8000,
 			navText: [ '<span class="fas fa-angle-left"></span>', '<span class="fas fa-angle-right"></span>' ],
 			responsive:{
 				0:{
@@ -335,8 +335,41 @@
 			loop:true,
 			margin:30,
 			nav:false,
-			smartSpeed: 500,
+			smartSpeed: 600,
 			autoplay: 1000,
+			navText: [ '<span class="far fa-angle-left"></span>', '<span class="far fa-angle-right"></span>' ],
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:1
+				},
+				800:{
+					items:1
+				},
+				1024:{
+					items:1
+				},
+				1200:{
+					items:1
+				}
+
+			}
+		});    		
+	}
+
+
+
+
+	// deals two-column Carousel
+	if ($('.dealstwo-column-carousel').length) {
+		$('.dealstwo-column-carousel').owlCarousel({
+			loop:false,
+			margin:50,
+			nav:true,
+			smartSpeed: 600,
+			
 			navText: [ '<span class="far fa-angle-left"></span>', '<span class="far fa-angle-right"></span>' ],
 			responsive:{
 				0:{
@@ -349,27 +382,25 @@
 					items:1
 				},
 				800:{
-					items:1
-				},			
-				1200:{
-					items:1
+					items:2
+				},
+				1024:{
+					items:3
 				}
-
 			}
 		});    		
 	}
 
 
+// deals  Carousel
 
-
-	// deals Carousel
 	if ($('.deals-carousel').length) {
 		$('.deals-carousel').owlCarousel({
 			loop:true,
 			margin:50,
 			nav:true,
-			smartSpeed: 500,
-			autoplay: 5000,
+			smartSpeed: 600,
+			// autoplay: 5000,
 			navText: [ '<span class="far fa-angle-left"></span>', '<span class="far fa-angle-right"></span>' ],
 			responsive:{
 				0:{

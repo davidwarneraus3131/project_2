@@ -381,7 +381,7 @@ $result = $conn->query($sql);
           $featured_properties = $result->fetch_assoc()['featured_properties'];
 
           // Fetch total active listings
-          $result = $conn->query("SELECT COUNT(id) AS active_listings FROM properties WHERE status = 'active'");
+          $result = $conn->query("SELECT COUNT(id) AS active_listings FROM properties WHERE property_status = 1");
           $active_listings = $result->fetch_assoc()['active_listings'];
 
           // Fetch total agents
@@ -389,7 +389,7 @@ $result = $conn->query($sql);
           $total_agents = $result->fetch_assoc()['total_agents'];
 
           // Fetch total sales (assuming property sales are stored)
-          $result = $conn->query("SELECT COUNT(id) AS total_sales FROM properties WHERE property_status = 'sold'");
+          $result = $conn->query("SELECT COUNT(id) AS total_sales FROM properties WHERE status = 'sold'");
           $total_sales = $result->fetch_assoc()['total_sales'];
 
 
@@ -411,7 +411,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-primary bubble-shadow-small">
-                        <i class="fas fa-users"></i>
+                      <a href="./users/users.php"><i class="fas fa-users"></i></a> 
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -432,7 +432,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="fas fa-user-check"></i>
+                      <a href="./users/users.php"><i class="fas fa-user-check"></i></a> 
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -453,7 +453,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-info bubble-shadow-small">
-                        <i class="fas fa-building"></i>
+                       <a href="./property/property.php"><i class="fas fa-building"></i></a> 
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -474,7 +474,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-warning bubble-shadow-small">
-                        <i class="fas fa-star"></i>
+                      <a href="./property/property.php"> <i class="fas fa-star"></i> </a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -495,7 +495,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                        <i class="fas fa-home"></i>
+                      <a href="./approved_property/approved_property_list.php"> <i class="fas fa-home"></i></a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -516,7 +516,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-dark bubble-shadow-small">
-                        <i class="fas fa-user-tie"></i>
+                      <a href="./agents/agents.php"> <i class="fas fa-user-tie"></i> </a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -537,7 +537,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="fas fa-handshake"></i>
+                      <a href="./property/property.php"><i class="fas fa-handshake"></i> </a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -559,7 +559,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-warning bubble-shadow-small">
-                        <i class="fas fa-blog"></i>
+                      <a href="./blogs/blog_list.php"> <i class="fas fa-users"></i></a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -580,7 +580,7 @@ $result = $conn->query($sql);
                   <div class="row align-items-center">
                     <div class="col-icon">
                       <div class="icon-big text-center icon-success bubble-shadow-small">
-                        <i class="fas fa-star"></i>
+                      <a href="./blogs/blog_list.php"><i class="fas fa-star"></i> </a>
                       </div>
                     </div>
                     <div class="col col-stats ms-3 ms-sm-0">
@@ -617,12 +617,12 @@ $result = $conn->query($sql);
                   <div class="card-head-row">
                     <div class="card-title">User & Agent Statistics</div>
                     <div class="card-tools">
-                      <a href="#" class="btn btn-label-success btn-round btn-sm me-2">
+                      <!-- <a href="#" class="btn btn-label-success btn-round btn-sm me-2">
                         <span class="btn-label"><i class="fa fa-pencil"></i></span> Export
                       </a>
                       <a href="#" class="btn btn-label-info btn-round btn-sm">
                         <span class="btn-label"><i class="fa fa-print"></i></span> Print
-                      </a>
+                      </a> -->
                     </div>
                   </div>
                 </div>

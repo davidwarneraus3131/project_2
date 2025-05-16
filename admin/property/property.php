@@ -1,8 +1,8 @@
 <?php
 
- include(__DIR__ . '/../../database/db.php'); 
- include '../admin_header.php';
-  ?>
+include(__DIR__ . '/../../database/db.php');
+include '../admin_header.php';
+?>
 
 
 
@@ -17,21 +17,21 @@
 
 
 
-    
 
-     
+
+
 <?php
 
 
 
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
-$agent_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0; 
+$agent_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
 // Fetch properties based on user role
 if ($role === 'admin') {
     $sql = "SELECT * FROM properties"; // Admin sees all properties
 } elseif ($role === 'agent') {
-    $sql = "SELECT * FROM properties WHERE agent_id = $agent_id"; 
+    $sql = "SELECT * FROM properties WHERE agent_id = $agent_id";
 } else {
     echo "Unauthorized access!";
     exit;
@@ -48,16 +48,18 @@ $result = $conn->query($sql);
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                <div class="card-header">
+                    <div class="card-header">
                         <div class="d-flex align-items-center">
                             <h4 class="card-title">Property List</h4>
-                            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#addPropertyModal">
+                            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
+                                data-bs-target="#addPropertyModal">
                                 Add Property
                             </button>
                         </div>
                         <div class="mt-3">
                             <input type="text" id="searchName" class="form-control" placeholder="Search Property Name">
-                            <input type="text" id="searchLocation" class="form-control mt-2" placeholder="Search Location">
+                            <input type="text" id="searchLocation" class="form-control mt-2"
+                                placeholder="Search Location">
                             <select id="searchStatus" class="form-control mt-2">
                                 <option value="">All Status</option>
                                 <option value="Available">Available</option>
@@ -77,29 +79,32 @@ $result = $conn->query($sql);
                                         <th>square_feet</th>
                                         <th>status</th>
                                         <th>country</th>
-                                        
-                                        
+
+
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
-                                            <td>    <img src="<?= "../../assets/images/property/" . htmlspecialchars($row['property_img1'] ?? '') ?>" alt="Property Image" width="100">
+                                            <td> <img
+                                                    src="<?= "../../assets/images/property/" . htmlspecialchars($row['property_img1'] ?? '') ?>"
+                                                    alt="Property Image" width="100">
                                             </td>
-                                            
-                                            
-                                            
-                                            
+
+
+
+
                                             <td><?= htmlspecialchars($row['property_name'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['price'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['location'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['square_feet'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['status'] ?? '') ?></td>
                                             <td><?= htmlspecialchars($row['country'] ?? '') ?></td>
-                                            
+
                                             <td>
-                                                <button class="btn btn-primary editProperty" data-id="<?= $row['id'] ?>" data-bs-toggle="modal" data-bs-target="#editPropertyModal">
+                                                <button class="btn btn-primary editProperty" data-id="<?= $row['id'] ?>"
+                                                    data-bs-toggle="modal" data-bs-target="#editPropertyModal">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button class="btn btn-danger deleteProperty" data-id="<?= $row['id'] ?>">
@@ -201,11 +206,14 @@ $result = $conn->query($sql);
                             <input type="file" name="property_img6" class="form-control"><br>
 
                             <label>Floor Plans:</label>
-                            <input type="text" name="floor_plan_1_description" class="form-control" placeholder="Floor Plan 1 Description"><br>
+                            <input type="text" name="floor_plan_1_description" class="form-control"
+                                placeholder="Floor Plan 1 Description"><br>
                             <input type="file" name="floor_plan_1_image" class="form-control"><br>
-                            <input type="text" name="floor_plan_2_description" class="form-control" placeholder="Floor Plan 2 Description"><br>
+                            <input type="text" name="floor_plan_2_description" class="form-control"
+                                placeholder="Floor Plan 2 Description"><br>
                             <input type="file" name="floor_plan_2_image" class="form-control"><br>
-                            <input type="text" name="floor_plan_3_description" class="form-control" placeholder="Floor Plan 3 Description"><br>
+                            <input type="text" name="floor_plan_3_description" class="form-control"
+                                placeholder="Floor Plan 3 Description"><br>
                             <input type="file" name="floor_plan_3_image" class="form-control"><br>
 
                             <button type="submit" class="btn btn-success mt-3">Save</button>
@@ -345,13 +353,42 @@ $result = $conn->query($sql);
 
                     <div class="mb-3">
                         <label for="editFloorPlan" class="form-label">Floor Plans</label>
-                        <input type="text" name="floor_plan_1_description" class="form-control" placeholder="Floor Plan 1 Description">
+                        <input type="text" name="floor_plan_1_description" class="form-control"
+                            placeholder="Floor Plan 1 Description">
                         <input type="file" name="floor_plan_1_image" class="form-control">
-                        <input type="text" name="floor_plan_2_description" class="form-control" placeholder="Floor Plan 2 Description">
+                        <input type="text" name="floor_plan_2_description" class="form-control"
+                            placeholder="Floor Plan 2 Description">
                         <input type="file" name="floor_plan_2_image" class="form-control">
-                        <input type="text" name="floor_plan_3_description" class="form-control" placeholder="Floor Plan 3 Description">
+                        <input type="text" name="floor_plan_3_description" class="form-control"
+                            placeholder="Floor Plan 3 Description">
                         <input type="file" name="floor_plan_3_image" class="form-control">
                     </div>
+
+                    <!-- add home page filters -->
+                    <div class="mb-3">
+    <label for="editFeatured">Featured Property?</label>
+    <select class="form-control" id="editFeatured" name="featured">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+    </select>
+</div>
+                    <div class="mb-3">
+    <label for="editpicks">is Populae Pick?</label>
+    <select class="form-control" id="edipicks" name="picks">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+    </select>
+</div>
+                    <div class="mb-3">
+    <label for="editpremium">is Premium?</label>
+    <select class="form-control" id="editpremium" name="premium">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+    </select>
+</div>
+
+
+
 
                     <button type="submit" class="btn btn-success">Update Property</button>
                 </form>
@@ -363,166 +400,169 @@ $result = $conn->query($sql);
 
 
 <script>
-$(document).ready(function () {
-    var table = $('#property-table').DataTable();
-    
-    $('#searchName').on('keyup', function () {
-        table.column(1).search(this.value).draw();
+    $(document).ready(function () {
+        var table = $('#property-table').DataTable();
+
+        $('#searchName').on('keyup', function () {
+            table.column(1).search(this.value).draw();
+        });
+
+        $('#searchLocation').on('keyup', function () {
+            table.column(3).search(this.value).draw();
+        });
+
+        $('#searchStatus').on('change', function () {
+            table.column(5).search(this.value).draw();
+        });
     });
-    
-    $('#searchLocation').on('keyup', function () {
-        table.column(3).search(this.value).draw();
-    });
-    
-    $('#searchStatus').on('change', function () {
-        table.column(5).search(this.value).draw();
-    });
-});
 </script>
 
 
 
 <script>
-$(document).ready(function() {
+    $(document).ready(function () {
 
-    $("#addPropertyForm").submit(function(e) {
-    e.preventDefault();
-    
-    var formData = new FormData(this); 
+        $("#addPropertyForm").submit(function (e) {
+            e.preventDefault();
 
-    $.ajax({
-        type: "POST",
-        url: "add_property.php",
-        data: formData,
-        processData: false, 
-        contentType: false, 
-        success: function(response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Property Added!',
-                text: response,
-                confirmButtonText: 'OK'
-            }).then(() => {
-                $("#addPropertyModal").modal("hide");
-                location.reload();
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: "POST",
+                url: "add_property.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Property Added!',
+                        text: response,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        $("#addPropertyModal").modal("hide");
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Error adding property.',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
             });
-        },
-        error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: 'Error adding property.',
-                confirmButtonText: 'Try Again'
-            });
-        }
-    });
-});
-
-
-    // EDIT PROPERTY - OPEN MODAL
-    $(document).on("click", ".editProperty", function() {
-        var id = $(this).data("id");
-        $.ajax({
-            type: "GET",
-            url: "get_property.php",
-            data: { id: id },
-            success: function(data) {
-                var property = JSON.parse(data);
-                $("#editPropertyId").val(property.id);
-                $("#editPropertyName").val(property.property_name);
-                $("#editPrice").val(property.price);
-                $("#editLocation").val(property.location);
-                $("#editBeds").val(property.beds);
-                $("#editBaths").val(property.baths);
-                $("#editSquareFeet").val(property.square_feet);
-                $("#editPropertyModal").modal("show");
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Error fetching property details.',
-                    confirmButtonText: 'OK'
-                });
-            }
         });
-    });
 
-    $("#editPropertyForm").submit(function(e) {
-    e.preventDefault();
 
-    var formData = new FormData(this);
+        // EDIT PROPERTY - OPEN MODAL
+        $(document).on("click", ".editProperty", function () {
+            var id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "get_property.php",
+                data: { id: id },
+                success: function (data) {
+                    var property = JSON.parse(data);
+                    $("#editPropertyId").val(property.id);
+                    $("#editPropertyName").val(property.property_name);
+                    $("#editPrice").val(property.price);
+                    $("#editLocation").val(property.location);
+                    $("#editBeds").val(property.beds);
+                    $("#editBaths").val(property.baths);
+                    $("#editSquareFeet").val(property.square_feet);
 
-    $.ajax({
-        type: "POST",
-        url: "update_property.php",
-        data: formData,
-        processData: false, 
-        contentType: false,  
-        success: function(response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Property Updated!',
-                text: response,
-                confirmButtonText: 'OK'
-            }).then(() => {
-                $("#editPropertyModal").modal("hide");
-                location.reload();
+                    $("editfeatured").val(property.featured);
+                    $("editpremium").val(property.is_premium);
+                    $("editpicks").val(property.picks);
+                    $("#editPropertyModal").modal("show");
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Error fetching property details.',
+                        confirmButtonText: 'OK'
+                    });
+                }
             });
-        },
-        error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops!',
-                text: 'Error updating property.',
-                confirmButtonText: 'Try Again'
-            });
-        }
-    });
-});
-
-
-    // DELETE PROPERTY
-    $(document).on("click", ".deleteProperty", function() {
-        var id = $(this).data("id");
-        Swal.fire({
-            title: "Are you sure?",
-            text: "This property will be deleted permanently!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "delete_property.php",
-                    data: { id: id },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted!',
-                            text: response,
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            location.reload();
-                        });
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops!',
-                            text: 'Error deleting property.',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
-            }
         });
-    });
 
-});
+        $("#editPropertyForm").submit(function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: "POST",
+                url: "update_property.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Property Updated!',
+                        text: response,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        $("#editPropertyModal").modal("hide");
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Error updating property.',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            });
+        });
+
+        // DELETE PROPERTY
+        $(document).on("click", ".deleteProperty", function () {
+            var id = $(this).data("id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This property will be deleted permanently!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "delete_property.php",
+                        data: { id: id },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: response,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'Error deleting property.',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+    });
 </script>
 
 
@@ -532,4 +572,4 @@ $(document).ready(function() {
 
 
 
-<?php  include '../admin_footer.php'; ?>
+<?php include '../admin_footer.php'; ?>

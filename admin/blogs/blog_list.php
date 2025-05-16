@@ -124,8 +124,8 @@ $result = $conn->query($sql);
 
                             <label>Featured:</label>
                             <select name="featured" class="form-control">
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
                             </select><br>
 
                             <label>Tags:</label>
@@ -195,8 +195,8 @@ $result = $conn->query($sql);
                     <div class="mb-3">
                         <label for="editFeatured" class="form-label">Featured</label>
                         <select name="featured" id="editFeatured" class="form-control">
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
                         </select>
                     </div>
 

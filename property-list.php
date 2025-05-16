@@ -9,7 +9,7 @@ include("./database/db.php");
 
     <div class="left-column pull-left">
         <!-- location-section -->
-        <section class="location-section">
+        <!-- <section class="location-section">
     <div class="map-column">
         <div class="google-map-area">
             <div class="google-map" id="contact-google-map" data-map-lat="40.712776" data-map-lng="-74.005974"
@@ -45,10 +45,10 @@ include("./database/db.php");
                                         <h6>Start From</h6>
                                         <h4>₹30,000.00</h4>
                                     </div>
-                                    <!-- <ul class="other-option pull-right clearfix">
+                                    <ul class="other-option pull-right clearfix">
                                         <li><a href="property-details.php"><i class="icon-12"></i></a></li>
                                         <li><a href="property-details.php"><i class="icon-13"></i></a></li>
-                                    </ul> -->
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -82,10 +82,10 @@ include("./database/db.php");
                                         <h6>Start From</h6>
                                         <h4>₹30,000.00</h4>
                                     </div>
-                                    <!-- <ul class="other-option pull-right clearfix">
+                                    <ul class="other-option pull-right clearfix">
                                         <li><a href="property-list.php"><i class="icon-12"></i></a></li>
                                         <li><a href="property-list.php"><i class="icon-13"></i></a></li>
-                                    </ul> -->
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -119,10 +119,10 @@ include("./database/db.php");
                                         <h6>Start From</h6>
                                         <h4>₹30,000.00</h4>
                                     </div>
-                                    <!-- <ul class="other-option pull-right clearfix">
+                                    <ul class="other-option pull-right clearfix">
                                         <li><a href="property-list.php"><i class="icon-12"></i></a></li>
                                         <li><a href="property-list.php"><i class="icon-13"></i></a></li>
-                                    </ul> -->
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -156,10 +156,10 @@ include("./database/db.php");
                                         <h6>Start From</h6>
                                         <h4>₹30,000.00</h4>
                                     </div>
-                                    <!-- <ul class="other-option pull-right clearfix">
+                                    <ul class="other-option pull-right clearfix">
                                         <li><a href="property-list.php"><i class="icon-12"></i></a></li>
                                         <li><a href="property-list.php"><i class="icon-13"></i></a></li>
-                                    </ul> -->
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -205,13 +205,25 @@ include("./database/db.php");
             </div>
         </div>
     </div>
-</section>
+</section> -->
         <!-- location-section end -->
     </div>
 
 
 
-
+    <!--Page Title-->
+    <section class="page-title centred" style="background-image: url(assets/images/background/page-title.jpg);">
+        <div class="auto-container">
+            <div class="content-box clearfix">
+                <h1>Property List View</h1>
+                <ul class="bread-crumb clearfix">
+                    <li><a href="index.php">Home</a></li>
+                    <li>Property List </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--End Page Title-->
 
 
 
@@ -270,16 +282,10 @@ include("./database/db.php");
                                                                             echo '<option value="' . htmlspecialchars($row['state_county']) . '" ' . $selected . '>' . htmlspecialchars($row['state_county']) . '</option>';
                                                                         }
                                                                     }
-
-
-
                                                                     ?>
                                                                 </select>
                                                             </div>
                                                         </div>
-
-
-
                                                     </div>
                                                     <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                         <div class="form-group">
@@ -301,7 +307,6 @@ include("./database/db.php");
                                                 </div>
                                             </form>
 
-
                                         </div>
                                         <div class="switch_btn_one ">
                                             <button
@@ -312,7 +317,6 @@ include("./database/db.php");
                                                     <a href="#" class="close-side-widget"><i
                                                             class="far fa-times"></i></a>
                                                 </div>
-
 
                                                 <form method="GET" action="">
                                                     <?php
@@ -361,7 +365,6 @@ include("./database/db.php");
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                         <!-- <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
                                                                 <label>Sort by</label>
@@ -380,7 +383,6 @@ include("./database/db.php");
                                                                 </div>
                                                             </div>
                                                         </div> -->
-
                                                         <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
                                                                 <label>Floor</label>
@@ -395,7 +397,6 @@ include("./database/db.php");
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                         <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
                                                                 <label>Bath</label>
@@ -410,8 +411,6 @@ include("./database/db.php");
                                                                 </div>
                                                             </div>
                                                         </div>
-
-
 
                                                         <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
@@ -438,7 +437,6 @@ include("./database/db.php");
                                                             </div>
                                                         </div>
 
-
                                                         <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
                                                                 <label>Property Status</label>
@@ -451,7 +449,6 @@ include("./database/db.php");
                                                                 </div>
                                                             </div>
                                                         </div>
-
 
                                                         <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                             <div class="form-group">
@@ -492,15 +489,46 @@ include("./database/db.php");
                                                             </div>
                                                         </div>
 
+                                                        <!-- Tags Filters -->
+                                                        <div class="col-lg-4 col-md-6 col-sm-12 column">
+                                                            <div class="form-group">
+                                                                <label>Property Features</label>
+                                                                <div class="checkbox-group">
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox" name="features[]"
+                                                                            value="furnished" <?php echo (isset($_GET['features']) && in_array('furnished', $_GET['features'])) ? 'checked' : ''; ?>>
+                                                                        <label for="furnished">Furnished</label>
+                                                                    </div>
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox" name="features[]"
+                                                                            value="semi_furnished" <?php echo (isset($_GET['features']) && in_array('semi_furnished', $_GET['features'])) ? 'checked' : ''; ?>>
+                                                                        <label
+                                                                            for="semi_furnished">Semi-Furnished</label>
+                                                                    </div>
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox" name="features[]"
+                                                                            value="ac" <?php echo (isset($_GET['features']) && in_array('ac', $_GET['features'])) ? 'checked' : ''; ?>>
+                                                                        <label for="ac">AC</label>
+                                                                    </div>
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox" name="features[]"
+                                                                            value="balcony" <?php echo (isset($_GET['features']) && in_array('balcony', $_GET['features'])) ? 'checked' : ''; ?>>
+                                                                        <label for="balcony">Balcony</label>
+                                                                    </div>
+                                                                    <div class="checkbox">
+                                                                        <input type="checkbox" name="features[]"
+                                                                            value="refrigerator" <?php echo (isset($_GET['features']) && in_array('refrigerator', $_GET['features'])) ? 'checked' : ''; ?>>
+                                                                        <label for="refrigerator">Refrigerator</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <button type="submit"
                                                         style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease;">
                                                         Search
                                                     </button>
                                                 </form>
-
-
-
                                             </div>
                                         </div>
                                     </div>
@@ -514,11 +542,7 @@ include("./database/db.php");
         </section>
         <!-- search-field-section end -->
 
-
-
         <?php
-
-
 
         // Set the number of records per page
         $limit = 6;
@@ -565,6 +589,8 @@ include("./database/db.php");
         $search_condition = "";
         $location_condition = "";
         $type_condition = "";
+        $feature_conditions = "";
+
 
         // Check if search query is provided
         if (isset($_GET['search-field']) && !empty($_GET['search-field'])) {
@@ -582,12 +608,8 @@ include("./database/db.php");
             $type_condition = "AND properties.property_type = '$property_type'";
         }
 
-
-
-
         // Initialize the filter conditions for advanced search
         
-
         $distance_condition = "";
         $bedroom_condition = "";
         $floor_condition = "";
@@ -639,9 +661,31 @@ include("./database/db.php");
         if (isset($_GET['min_sqft']) && isset($_GET['max_sqft']) && !empty($_GET['min_sqft']) && !empty($_GET['max_sqft'])) {
             $min_sqft = intval($_GET['min_sqft']);
             $max_sqft = intval($_GET['max_sqft']);
-            $area_condition = "AND properties.area BETWEEN $min_sqft AND $max_sqft";
+            $area_condition = "AND properties.square_feet BETWEEN $min_sqft AND $max_sqft";
         }
 
+        // Initialize the feature conditions
+        
+        if (isset($_GET['features']) && !empty($_GET['features'])) {
+            $features = $_GET['features'];
+
+            // Add conditions for each feature
+            if (in_array('furnished', $features)) {
+                $feature_conditions .= " AND properties.furnished = 1";
+            }
+            if (in_array('semi_furnished', $features)) {
+                $feature_conditions .= " AND properties.semi_furnished = 1";
+            }
+            if (in_array('ac', $features)) {
+                $feature_conditions .= " AND properties.ac = 1";
+            }
+            if (in_array('balcony', $features)) {
+                $feature_conditions .= " AND properties.balcony = 1";
+            }
+            if (in_array('refrigerator', $features)) {
+                $feature_conditions .= " AND properties.refrigerator = 1";
+            }
+        }
 
         $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
                users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
@@ -649,25 +693,17 @@ include("./database/db.php");
         JOIN users ON properties.agent_id = users.id 
         WHERE 1=1 $search_condition $location_condition $type_condition 
               $distance_condition $bedroom_condition $floor_condition $bath_condition 
-              $agency_condition $price_condition $area_condition $property_type_condition
+              $agency_condition $price_condition $area_condition $property_type_condition $feature_conditions
         $sort_order 
         LIMIT $limit OFFSET $offset";
 
-        // echo $sql;
+        //  echo $sql;
         
-
-
-
         $result = mysqli_query($conn, $sql);
-
         // Showing dynamic results text
         $start_item = ($page - 1) * $limit + 1;
         $end_item = min($start_item + $limit - 1, $total_records);
-
-
-
         ?>
-
 
         <!-- deals-style-two -->
         <section class="deals-style-two">
@@ -701,12 +737,6 @@ include("./database/db.php");
                         window.location.href = "?sort=" + value + "&page=1";
                     }
                 </script>
-
-
-
-
-
-
                 <div class="wrapper list">
                     <!-- Loop through each property fetched from the database -->
                     <?php
@@ -722,14 +752,17 @@ include("./database/db.php");
                             $beds = $row['beds'];
                             $baths = $row['baths'];
                             $square_feet = $row['square_feet'];
-
                             ?>
                             <div class="deals-list-content list-item">
                                 <div class="deals-block-one">
                                     <div class="inner-box">
                                         <div class="image-box">
-                                            <figure class="image"><img src="assets/images/property/<?php echo $property_img; ?>"
-                                                    alt=""></figure>
+
+                                       <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
+  
                                             <?php if ($row['batch'] == 1): ?>
                                                 <div class="batch"><i class="icon-11"></i></div>
                                             <?php endif; ?>
@@ -765,21 +798,17 @@ include("./database/db.php");
                                                 <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
                                                 <li><i class="icon-16"></i><?php echo $square_feet; ?> Sq Ft</li>
                                             </ul>
-                                          
-                                            
-
-<div class="other-info-box clearfix">
-    <div class="btn-box pull-left">
-        <?php if (isset($_SESSION['user_id'])) { ?>
-            <a href="property-details.php?id=<?php echo $row['id']; ?>" class="theme-btn btn-two">See Details</a>
-        <?php } else { ?>
-            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
-        <?php } ?>
-    </div>
-</div>
-
-
-
+                                            <div class="other-info-box clearfix">
+                                                <div class="btn-box pull-left">
+                                                    <?php if (isset($_SESSION['user_id'])) { ?>
+                                                        <a href="property-details.php?id=<?php echo $row['id']; ?>"
+                                                            class="theme-btn btn-two">See Details</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See
+                                                            Details</a>
+                                                    <?php } ?>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -790,10 +819,6 @@ include("./database/db.php");
                         echo "No properties found.";
                     }
                     ?>
-
-
-
-
                     <!-- Grid Layout for Properties -->
                     <div class="deals-grid-content">
                         <div class="row clearfix">
@@ -831,9 +856,10 @@ include("./database/db.php");
                                         <div class="feature-block-one">
                                             <div class="inner-box">
                                                 <div class="image-box">
-                                                    <figure class="image"><img
-                                                            src="assets/images/property/<?php echo $property_img; ?>" alt="">
-                                                    </figure>
+                                                      <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
 
                                                     <?php if ($row['batch'] == 1): ?>
                                                         <div class="batch"><i class="icon-11"></i></div>
@@ -874,15 +900,13 @@ include("./database/db.php");
                                                         <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
                                                         <li><i class="icon-16"></i><?php echo $square_feet; ?> Sq Ft</li>
                                                     </ul>
-                                                    <div class="btn-box">
+                                             <div class="btn-box">
                                                         
                                                     <?php if (isset($_SESSION['user_id'])) { ?>
-            <a href="property-details.php?id=<?php echo $row['id']; ?>" class="theme-btn btn-two">See Details</a>
-        <?php } else { ?>
-            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
-        <?php } ?>
-                                                        
-                                                        
+                                           <a href="property-details.php?id=<?php echo $row['id']; ?>" class="theme-btn btn-two">See Details</a>
+                                       <?php } else { ?>
+                                           <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
+                                       <?php } ?>                                                  
                                                         </div>
                                                 </div>
                                             </div>
@@ -898,10 +922,6 @@ include("./database/db.php");
 
 
                 </div>
-
-
-
-
                 <!-- Pagination -->
                 <?php if ($total_pages > 1): ?>
                     <div class="pagination-wrapper">
@@ -927,8 +947,6 @@ include("./database/db.php");
                         </ul>
                     </div>
                 <?php endif; ?>
-
-
                 <!-- <div class="pagination-wrapper">
                             <ul class="pagination clearfix">
                                 <li><a href="property-list-3.html" class="current">1</a></li>
@@ -939,16 +957,37 @@ include("./database/db.php");
                         </div> -->
 
             </div>
+            <!-- ad section  -->
+            <div class="sticky-ad" style="position: fixed; top: 350px; right: 20px; width: 100px; z-index: 99; ">
+                <img src="assets/images/background/cta-1.jpg" alt="Sidebar Ad" style="width: 100%;">
+            </div>
+
+            <div class="col-lg-3 col-md-12">
+                <div class="ad-container mb-4">
+                    <img src="assets/images/background/cta-1.jpg" class="img-fluid w-100" alt="Sidebar Ad">
+                </div>
+            </div>
+
+            <style>
+                .ad-container {
+                    margin: 20px 0;
+                    text-align: center;
+                }
+
+                .ad-container img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 10px;
+                }
+            </style>
+
+            <!-- ad section end -->
         </section>
         <!-- deals-style-two end -->
     </div>
 
 </div>
 <!-- page-content end -->
-
-
-
-
 
 
 <!-- main-footer -->
@@ -1044,14 +1083,11 @@ include("./database/db.php");
 <!-- main-footer end -->
 
 
-
 <!--Scroll to top-->
 <button class="scroll-top scroll-to-target" data-target="html">
     <span class="fal fa-angle-up"></span>
 </button>
 </div>
-
-
 <!-- jequery plugins -->
 <script src="assets/js/jquery.js"></script>
 <script src="assets/js/popper.min.js"></script>
@@ -1082,8 +1118,7 @@ include("./database/db.php");
 
 </html>
 
-
- <!-- see details button authorize -->
+<!-- see details button authorize -->
 <!-- SweetAlert Script -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -1102,3 +1137,28 @@ include("./database/db.php");
         });
     }
 </script>
+
+<style>
+    .watermark-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .property-img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .watermark {
+        position: absolute;
+        bottom: 39px;
+        right: 10px;
+        width: 30px;
+        height: auto;
+        opacity: 0.5;
+        pointer-events: none;
+        z-index: 2;
+    }
+</style>

@@ -31,6 +31,13 @@ $floor_plan_1_description = $_POST['floor_plan_1_description'];
 $floor_plan_2_description = $_POST['floor_plan_2_description'];
 $floor_plan_3_description = $_POST['floor_plan_3_description'];
 
+// add homepage filters
+$featured = isset($_POST['featured']);
+$premium = isset($_POST['premium']);
+$picks = isset($_POST['picks']);
+
+
+
 // Function to handle file uploads
 function uploadFile($fileInputName) {
     if (!empty($_FILES[$fileInputName]['name'])) {
@@ -62,7 +69,10 @@ $sql = "UPDATE properties SET
             description = '$description', 
             beds = '$beds', 
             baths = '$baths', 
-            square_feet = '$square_feet', 
+            square_feet = '$square_feet',
+            featured = '$featured', 
+            is_premium = '$premium',
+            picks = '$picks',
             country = '$country', 
             state_county = '$state_county', 
             city = '$city', 

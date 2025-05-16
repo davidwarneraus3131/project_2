@@ -682,6 +682,8 @@ if ($result->num_rows > 0) {
 <!-- search-field-section end -->
 
 
+
+</style>
 <!-- feature-style-three -->
 <section class="feature-style-three centred">
     <div class="auto-container">
@@ -691,7 +693,7 @@ if ($result->num_rows > 0) {
                     <div class="inner-box">
                         <div class="icon-box"><i class="icon-1"></i></div>
                         <h4>Excellent Reputation</h4>
-                        <p>Lorem ipsum dolor sit consectetur sed eiusm tempor incididunt dolore magna.</p>
+                        <p style="font-size: 12px;">Pay your rent using Credit Card.</p>
                     </div>
                 </div>
             </div>
@@ -700,7 +702,7 @@ if ($result->num_rows > 0) {
                     <div class="inner-box">
                         <div class="icon-box"><i class="icon-26"></i></div>
                         <h4>Best Local Agents</h4>
-                        <p>Lorem ipsum dolor sit consectetur sed eiusm tempor incididunt dolore magna.</p>
+                        <p style="font-size: 12px;">Instant access to zero brokerage properties</p>
                     </div>
                 </div>
             </div>
@@ -709,7 +711,7 @@ if ($result->num_rows > 0) {
                     <div class="inner-box">
                         <div class="icon-box"><i class="icon-21"></i></div>
                         <h4>Personalized Service</h4>
-                        <p>Lorem ipsum dolor sit consectetur sed eiusm tempor incididunt dolore magna.</p>
+                        <p style="font-size: 12px;">Lowest Interest rate offers</p>
                     </div>
                 </div>
             </div>
@@ -718,8 +720,10 @@ if ($result->num_rows > 0) {
 </section>
 
 
+
+
 <!-- Latest Properties  -->
- <!-- featured properties -->
+
 <?php
 $sql = "SELECT properties.*, 
        users.name, users.email, users.user_img, users.phone, users.occupation, 
@@ -732,7 +736,7 @@ $result = mysqli_query($conn, $sql);
 if ($result && mysqli_num_rows($result) > 0) {
     ?>
 
-    <section class="feature-style-two alternate-2 sec-pad"  >
+    <section class="feature-style-two alternate-2 sec-pad">
         <div class="auto-container">
             <div class="sec-title">
                 <h5>Latest</h5>
@@ -755,8 +759,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <div class="feature-block-one">
                             <div class="inner-box">
                                 <div class="image-box">
-                                    <figure class="image"><img src="assets/images/property/<?php echo $property_img ?>" alt="">
-                                    </figure>
+                                     <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
                                     <div class="batch"><i class="icon-11"></i></div>
                                     <span class="category">Featured</span>
                                 </div>
@@ -818,7 +824,8 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 ?>
 
- <!-- Latest Properties End -->
+<!-- Latest Properties End -->
+
 
 
 
@@ -868,9 +875,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                                     <div class="row clearfix">
                                         <div class="col-lg-6 col-md-6 col-sm-12 deals-block">
                                             <div class="image-box">
-                                                <figure class="image"><img
-                                                        src="assets/images/property/<?php echo $property_img ?>" alt="">
-                                                </figure>
+                                                <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
                                                 <div class="batch"><i class="icon-11"></i></div>
                                                 <span class="category">Top Pick</span>
                                                 <div class="buy-btn"><a
@@ -939,10 +947,6 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <?php } ?>
 
 
-
-
-
-
                     </div>
                 </div>
             </div>
@@ -956,10 +960,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     echo "<p>No Pick Properties found.</p>";
 }
 ?>
-
-
-
-
+<!-- our picks end -->
 
 
 
@@ -985,7 +986,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <h5>Features</h5>
                 <h2>Featured Property</h2>
             </div>
-            <div class="three-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
+            <div class="dealstwo-column-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
                 <?php while ($row = mysqli_fetch_assoc($result)) {
                     $property_name = $row['property_name'];
                     $price = $row['price'];
@@ -1002,8 +1003,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <div class="feature-block-one">
                             <div class="inner-box">
                                 <div class="image-box">
-                                    <figure class="image"><img src="assets/images/property/<?php echo $property_img ?>" alt="">
-                                    </figure>
+                                   <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
                                     <div class="batch"><i class="icon-11"></i></div>
                                     <span class="category">Featured</span>
                                 </div>
@@ -1064,6 +1067,12 @@ if ($result && mysqli_num_rows($result) > 0) {
     echo "<p>No properties found.</p>";
 }
 ?>
+
+
+
+
+
+
 <!-- Premium properties -->
 <?php
 $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
@@ -1081,7 +1090,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <h5>Premium</h5>
                 <h2>Premium Properties</h2>
             </div>
-            <div class="three-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
+            <div class="four-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
                 <?php while ($row = mysqli_fetch_assoc($result)) {
                     $property_name = $row['property_name'];
                     $price = $row['price'];
@@ -1098,8 +1107,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <div class="feature-block-one">
                             <div class="inner-box">
                                 <div class="image-box">
-                                    <figure class="image"><img src="assets/images/property/<?php echo $property_img ?>" alt="">
-                                    </figure>
+                                    <figure class="image watermark-container">
+    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
+    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+</figure>
                                     <div class="batch"><i class="icon-11"></i></div>
                                     <span class="category">Featured</span>
                                 </div>
@@ -1108,7 +1119,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         <div class="author pull-left">
                                             <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>"
                                                     alt=""></figure>
-                                            <h6><?php echo $agent_name ?></h6>
+                                            <h6 style="font-size: 13px;"><?php echo $agent_name ?></h6>
                                         </div>
                                         <div class="buy-btn pull-right"><a
                                                 href="property-details.php?id=<?php echo $row['id']; ?>">For
@@ -1131,12 +1142,12 @@ if ($result && mysqli_num_rows($result) > 0) {
                                                         class="icon-13"></i></a></li> -->
                                         </ul>
                                     </div>
-                                    <p><?php echo $description; ?></p>
+                                    <!-- <p><?php echo $description; ?></p>
                                     <ul class="more-details clearfix">
                                         <li><i class="icon-14"></i><?php echo $beds ?> Beds</li>
                                         <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
                                         <li><i class="icon-16"></i><?php echo $square_feet ?> Sq Ft</li>
-                                    </ul>
+                                    </ul> -->
                                     <div class="btn-box">
 
 
@@ -1350,13 +1361,13 @@ $result = mysqli_query($conn, $query);
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12 pricing-block">
-                <div class="pricing-block-one wow fadeInUp animated" data-wow-delay="600ms" data-wow-duration="1500ms">
+                <div class="pricing-block-one wow fadeInUp animated" data-wow-delay="300ms" data-wow-duration="1500ms">
                     <div class="pricing-table">
                         <div class="table-header">
                             <div class="shape-1" style="background-image: url(assets/images/shape/shape-4.png);"></div>
                             <div class="shape-2" style="background-image: url(assets/images/shape/shape-5.png);"></div>
-                            <h4>Platinam Pack</h4>
-                            <h2>₹700 <span>/ mo</span></h2>
+                            <h4>Platinum Pack</h4>
+                            <h2>₹900 <span>/ mo</span></h2>
                         </div>
                         <div class="table-content">
                             <ul class="feature-list clearfix">
@@ -1367,13 +1378,14 @@ $result = mysqli_query($conn, $query);
                             </ul>
                         </div>
                         <div class="table-footer">
-                            <button class="link-btn razorpay-btn" data-amount="700" data-plan="Platinam Pack">Buy
+                            <button class="link-btn razorpay-btn" data-amount="900" data-plan="platinum Pack">Buy
                                 Now</button>
                         </div>
 
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
@@ -1658,3 +1670,62 @@ $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest';
         });
     });
 </script>
+
+
+<!-- gettting a users location  -->
+<script>
+    navigator.geolocation.getCurrentPosition(function (position) {
+        fetch('get-properties.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const div = document.getElementById("results");
+                div.innerHTML = data.length === 0
+                    ? "No nearby properties found"
+                    : data.map(p => `
+          <div>
+            <h3>${p.property_name}</h3>
+            <p>${p.city}, ${p.address}</p>
+            <img src="${p.property_img1}" width="200" /><br>
+            <strong>${p.price} ₹</strong><br>
+            <small>${p.distance.toFixed(2)} km away</small>
+          </div>
+        `).join('');
+            });
+    });
+</script>
+
+<div id="results">Loading nearby properties...</div>
+
+
+
+<style>
+    .watermark-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .property-img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .watermark {
+        position: absolute;
+        bottom: 39px;
+        right: 10px;
+        width: 30px;
+        height: auto;
+        opacity: 0.5;
+        pointer-events: none;
+        z-index: 2;
+    }
+</style>
