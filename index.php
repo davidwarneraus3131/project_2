@@ -8,6 +8,12 @@ include("./database/db.php");
 
 
 ?>
+<!-- In HEAD -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Before closing BODY -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 
 <!-- location-section -->
 <?php
@@ -295,13 +301,16 @@ if ($result->num_rows > 0) {
                                     </form>
                                 </div>
                                 <div class="switch_btn_one ">
+                                    
                                     <button
                                         class="nav-btn nav-toggler navSidebar-button clearfix search__toggler">Advanced
-                                        Search<i class="fas fa-angle-down"></i></button>
+                                        Search <i class="fas fa-angle-down"></i></button>
+                                        
                                     <div class="advanced-search">
                                         <div class="close-btn">
-                                            <a href="#" class="close-side-widget"><i class="far fa-times"></i></a>
+                                            <!-- <a href="#" class="close-side-widget"><i class="fas fa-angle-up"></i></a> -->
                                         </div>
+                                       
 
 
                                         <form method="GET" action="property-list.php">
@@ -724,83 +733,96 @@ if ($result->num_rows > 0) {
 
 <!-- Latest Properties  -->
 
+
 <?php
-$sql = "SELECT properties.*, 
+$sql = " SELECT properties.*, 
        users.name, users.email, users.user_img, users.phone, users.occupation, 
        users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
 FROM properties 
 JOIN users ON properties.agent_id = users.id 
 ORDER BY properties.created_at DESC 
-LIMIT 4;";
+LIMIT 5";
 $result = mysqli_query($conn, $sql);
 if ($result && mysqli_num_rows($result) > 0) {
     ?>
 
-    <section class="feature-style-two alternate-2 sec-pad">
+
+    <section class="team-section sec-pad centred  ">
+        <!-- <div class="pattern-layer" style="background-image: url(assets/images/shape/shape-1.png);"></div> -->
         <div class="auto-container">
             <div class="sec-title">
-                <h5>Latest</h5>
-                <h2>Latest Properties</h2>
+                <h5>Latest </h5>
+                <h2>Latest Property</h2>
             </div>
-            <div class="three-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
-                <?php while ($row = mysqli_fetch_assoc($result)) {
-                    $property_name = $row['property_name'];
-                    $price = $row['price'];
-                    $description = $row['description'];
-                    $agent_name = $row['name'];
-                    $property_img = $row['property_img1'];
-                    $beds = $row['beds'];
-                    $baths = $row['baths'];
-                    $square_feet = $row['square_feet'];
-                    $prop_status = $row['status'];
-                    $agent_img = $row['user_img'];
-                    ?>
-                    <div class="single-column">
-                        <div class="feature-block-one">
-                            <div class="inner-box">
-                                <div class="image-box">
-                                     <figure class="image watermark-container">
-    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
-    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
-</figure>
-                                    <div class="batch"><i class="icon-11"></i></div>
-                                    <span class="category">Featured</span>
-                                </div>
-                                <div class="lower-content">
-                                    <div class="author-info clearfix">
-                                        <div class="author pull-left">
-                                            <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>"
-                                                    alt=""></figure>
-                                            <h6><?php echo $agent_name ?></h6>
+            <div class="single-item-carousel owl-carousel owl-theme owl-dots-none nav-style-one owl-loaded owl-drag">
+
+
+
+
+
+                <div class="owl-stage-outer">
+                    <div class="owl-stage"
+                        style="transform: translate3d(-2800px, 0px, 0px); transition: 0.5s; width: 4400px;">
+
+
+
+                        <?php while ($row = mysqli_fetch_assoc($result)) {
+                            $property_name = $row['property_name'];
+                            $price = $row['price'];
+                            $description = $row['description'];
+                            $agent_name = $row['name'];
+                            $property_img = $row['property_img1'];
+                            $beds = $row['beds'];
+                            $baths = $row['baths'];
+                            $square_feet = $row['square_feet'];
+                            $prop_status = $row['status'];
+                            $agent_img = $row['user_img'];
+                            ?>
+
+                            <div class="owl-item cloned" style="width: 370px; margin-right: 30px;">
+
+
+
+                                <div class="team-block-one">
+                                    <div class="inner-box">
+
+                                        <div class="image-box">
+                                            <figure class="image watermark-container">
+                                                <img src="assets/images/property/<?php echo $property_img ?>" alt=""
+                                                    class="property-img">
+                                                <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+                                            </figure>
+                                            <!-- <div class="batch"><i class="icon-11"></i></div>
+                                    <span class="category">Featured</span> -->
                                         </div>
-                                        <div class="buy-btn pull-right"><a
-                                                href="property-details.php?id=<?php echo $row['id']; ?>">For
-                                                <?php echo $prop_status ?></a></div>
-                                    </div>
-                                    <div class="title-text">
-                                        <h4><a
-                                                href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name; ?></a>
-                                        </h4>
-                                    </div>
-                                    <div class="price-box clearfix">
-                                        <div class="price-info pull-left">
-                                            <h6>Start From</h6>
-                                            <h4>₹<?php echo number_format($price, 2); ?></h4>
-                                        </div>
-                                        <ul class="other-option pull-right clearfix">
-                                            <!-- <li><a href="property-details.php?id=<?php echo $row['id']; ?>"><i
+                                        <div class="lower-content">
+                                            <div class="inner">
+                                                <h4><a
+                                                        href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name; ?></a>
+                                                </h4>
+                                                <div class="price-box clearfix">
+                                                    <div class="price-info pull-left">
+                                                        <!-- <h6>Start From</h6> -->
+                                                        <h4>₹<?php echo number_format($price, 2); ?></h4>
+                                                    </div>
+                                                    <ul class="other-option pull-right clearfix">
+                                                        <!-- <li><a href="property-details.php?id=<?php echo $row['id']; ?>"><i
                                                         class="icon-12"></i></a></li>
                                             <li><a href="property-details.php?id=<?php echo $row['id']; ?>"><i
                                                         class="icon-13"></i></a></li> -->
-                                        </ul>
-                                    </div>
-                                    <p><?php echo $description; ?></p>
-                                    <ul class="more-details clearfix">
-                                        <li><i class="icon-14"></i><?php echo $beds ?> Beds</li>
-                                        <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
-                                        <li><i class="icon-16"></i><?php echo $square_feet ?> Sq Ft</li>
-                                    </ul>
-                                    <div class="btn-box">
+                                                    </ul>
+                                                </div>
+                                                <ul class="social-links clearfix">
+                                                    <?php if (isset($_SESSION['user_id'])) { ?>
+                                                        <a href="property-details.php?id=<?php echo $row['id']; ?>"
+                                                            class="theme-btn btn-two">See Details</a>
+                                                    <?php } else { ?>
+                                                        <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See
+                                                            Details</a>
+                                                    <?php } ?>
+                                                </ul>
+
+                                                <!-- <div class="btn-box">
 
 
                                         <?php if (isset($_SESSION['user_id'])) { ?>
@@ -809,13 +831,43 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         <?php } else { ?>
                                             <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
                                         <?php } ?>
+                                    </div> -->
+
+
+                                            </div>
+
+
+
+
+                                        </div>
+
                                     </div>
+
                                 </div>
+
+
                             </div>
-                        </div>
+                        <?php } ?>
                     </div>
-                <?php } ?>
+
+                </div>
+
+
+                <div class="owl-nav disabled">
+                    <button type="button" role="presentation" class="owl-prev"><span
+                            class="far fa-angle-left"></span></button>
+                    <button type="button" role="presentation" class="owl-next"><span
+                            class="far fa-angle-right"></span></button>
+                </div>
+                <div class="owl-dots">
+                    <button role="button" class="owl-dot"><span></span></button>
+                    <button role="button" class="owl-dot"><span></span></button>
+                    <button role="button" class="owl-dot"><span></span></button>
+                    <button role="button" class="owl-dot active"><span></span></button>
+                    <button role="button" class="owl-dot"><span></span></button>
+                </div>
             </div>
+
         </div>
     </section>
     <?php
@@ -825,6 +877,9 @@ if ($result && mysqli_num_rows($result) > 0) {
 ?>
 
 <!-- Latest Properties End -->
+
+
+
 
 
 
@@ -876,9 +931,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         <div class="col-lg-6 col-md-6 col-sm-12 deals-block">
                                             <div class="image-box">
                                                 <figure class="image watermark-container">
-    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
-    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
-</figure>
+                                                    <img src="assets/images/property/<?php echo $property_img ?>" alt=""
+                                                        class="property-img">
+                                                    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+                                                </figure>
                                                 <div class="batch"><i class="icon-11"></i></div>
                                                 <span class="category">Top Pick</span>
                                                 <div class="buy-btn"><a
@@ -952,8 +1008,7 @@ if ($result && mysqli_num_rows($result) > 0) {
             </div>
         </div>
         <div class="owl-nav"><button type="button" role="presentation" class="owl-prev"></button></div>
-        </div>
-        </div>
+
     </section>
     <?php
 } else {
@@ -970,103 +1025,178 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 
 <!-- featured properties -->
+
+
 <?php
 $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
                users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
         FROM properties 
         JOIN users ON properties.agent_id = users.id 
-        WHERE  featured = 1";
+        WHERE  featured = 1;";
+
+
+
+
+
+
 $result = mysqli_query($conn, $sql);
 if ($result && mysqli_num_rows($result) > 0) {
     ?>
-
-    <section class="feature-style-two alternate-2 sec-pad" style="padding-top: 0px;">
+    <section class="news-style-two sec-pad">
         <div class="auto-container">
             <div class="sec-title">
-                <h5>Features</h5>
+                <h5>Featured </h5>
                 <h2>Featured Property</h2>
             </div>
-            <div class="dealstwo-column-carousel owl-carousel owl-theme owl-dots-none nav-style-one">
-                <?php while ($row = mysqli_fetch_assoc($result)) {
-                    $property_name = $row['property_name'];
-                    $price = $row['price'];
-                    $description = $row['description'];
-                    $agent_name = $row['name'];
-                    $property_img = $row['property_img1'];
-                    $beds = $row['beds'];
-                    $baths = $row['baths'];
-                    $square_feet = $row['square_feet'];
-                    $prop_status = $row['status'];
-                    $agent_img = $row['user_img'];
-                    ?>
-                    <div class="single-column">
-                        <div class="feature-block-one">
-                            <div class="inner-box">
-                                <div class="image-box">
-                                   <figure class="image watermark-container">
-    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
-    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
-</figure>
-                                    <div class="batch"><i class="icon-11"></i></div>
-                                    <span class="category">Featured</span>
-                                </div>
-                                <div class="lower-content">
-                                    <div class="author-info clearfix">
-                                        <div class="author pull-left">
-                                            <figure class="author-thumb"><img src="assets/images/users/<?php echo $agent_img ?>"
-                                                    alt=""></figure>
-                                            <h6><?php echo $agent_name ?></h6>
-                                        </div>
-                                        <div class="buy-btn pull-right"><a
-                                                href="property-details.php?id=<?php echo $row['id']; ?>">For
-                                                <?php echo $prop_status ?></a></div>
-                                    </div>
-                                    <div class="title-text">
-                                        <h4><a
-                                                href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name; ?></a>
-                                        </h4>
-                                    </div>
-                                    <div class="price-box clearfix">
-                                        <div class="price-info pull-left">
-                                            <h6>Start From</h6>
-                                            <h4>₹<?php echo number_format($price, 2); ?></h4>
-                                        </div>
-                                        <ul class="other-option pull-right clearfix">
-                                            <!-- <li><a href="property-details.php?id=<?php echo $row['id']; ?>"><i
-                                                        class="icon-12"></i></a></li>
-                                            <li><a href="property-details.php?id=<?php echo $row['id']; ?>"><i
-                                                        class="icon-13"></i></a></li> -->
-                                        </ul>
-                                    </div>
-                                    <p><?php echo $description; ?></p>
-                                    <ul class="more-details clearfix">
-                                        <li><i class="icon-14"></i><?php echo $beds ?> Beds</li>
-                                        <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
-                                        <li><i class="icon-16"></i><?php echo $square_feet ?> Sq Ft</li>
-                                    </ul>
-                                    <div class="btn-box">
 
+            <!-- Swiper Slider Start -->
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
 
-                                        <?php if (isset($_SESSION['user_id'])) { ?>
-                                            <a href="property-details.php?id=<?php echo $row['id']; ?>"
-                                                class="theme-btn btn-two">See Details</a>
-                                        <?php } else { ?>
-                                            <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
-                                        <?php } ?>
+                    <?php while ($row = mysqli_fetch_assoc($result)) {
+                        $property_name = $row['property_name'];
+                        $price = $row['price'];
+                        $description = $row['description'];
+                        $agent_name = $row['name'];
+                        $property_img = $row['property_img1'];
+                        $beds = $row['beds'];
+                        $baths = $row['baths'];
+                        $square_feet = $row['square_feet'];
+                        $prop_status = $row['status'];
+                        $agent_img = $row['user_img'];
+                        ?>
+                        <!-- Each Slide -->
+                        <div class="swiper-slide">
+                            <div class="col news-block">
+                                <div class="news-block-two wow fadeInLeft animated" data-wow-delay="00ms"
+                                    data-wow-duration="1500ms">
+                                    <div class="inner-box align-items-center">
+                                        <div class="image-box">
+                                            <figure class="image">
+                                                <a href="blog-details.html">
+                                                    <img src="assets/images/property/<?php echo $property_img ?>" alt="">
+                                                </a>
+                                            </figure>
+                                            <a href="blog-details.html" class="feature">Featured</a>
+                                        </div>
+                                        <div class="content-box">
+                                            <ul class="post-info clearfix">
+                                                <li class="author-box">
+                                                    <figure class="author-thumb">
+                                                        <img src="assets/images/users/<?php echo $agent_img ?>" alt="">
+                                                    </figure>
+                                                    <h5><a href="blog-details.html"><?php echo $agent_name ?></a></h5>
+                                                </li>
+                                            </ul>
+                                            <h4>
+                                                <a
+                                                    href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name; ?></a>
+                                            </h4>
+                                            <div class="price-box clearfix">
+                                                <div class="price-info pull-left">
+                                                    <h6>Start From</h6>
+                                                    <h4>₹<?php echo number_format($price, 2); ?></h4>
+                                                </div>
+                                            </div>
+                                            <p><?php echo $description ?></p>
+                                            <div class="btn-box">
+                                                <?php if (isset($_SESSION['user_id'])) { ?>
+                                                    <a href="property-details.php?id=<?php echo $row['id']; ?>"
+                                                        class="theme-btn btn-two">See Details</a>
+                                                <?php } else { ?>
+                                                    <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
+                </div>
+
+                <!-- Navigation -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
+            <!-- Swiper Slider End -->
+
         </div>
     </section>
+
+    <!-- Swiper Init -->
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 2,
+            spaceBetween: 30,
+            loop: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                1024: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 1,
+                },
+                480: {
+                    slidesPerView: 1,
+                }
+            }
+        });
+    </script>
+
     <?php
 } else {
     echo "<p>No properties found.</p>";
 }
 ?>
+<style>
+    .swiper-button-next,
+    .swiper-button-prev {
+        width: 42px;
+        height: 42px;
+        background-color: #e5e7ec;
+        color: #555;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+        background-color: #d3d6dc;
+        color: #000;
+    }
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* Small spacing between arrows and slider */
+    .swiper-button-next {
+        right: 10px;
+    }
+
+    .swiper-button-prev {
+        left: 10px;
+    }
+</style>
+
+
+
+
 
 
 
@@ -1108,9 +1238,10 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <div class="inner-box">
                                 <div class="image-box">
                                     <figure class="image watermark-container">
-    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
-    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
-</figure>
+                                        <img src="assets/images/property/<?php echo $property_img ?>" alt=""
+                                            class="property-img">
+                                        <img src="assets/images/logo.png" class="watermark" alt="Watermark">
+                                    </figure>
                                     <div class="batch"><i class="icon-11"></i></div>
                                     <span class="category">Featured</span>
                                 </div>
@@ -1438,6 +1569,26 @@ $result = mysqli_query($conn, $query);
     </div>
 </section>
 <!-- contact-section end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- main-footer -->

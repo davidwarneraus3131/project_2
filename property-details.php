@@ -698,25 +698,25 @@ if ($result->num_rows > 0) {
                                         Listing</a></div>
                             </div>
                         </div>
-                        <div class="form-inner">
-                            <form action="property-details.php" method="post" class="default-form">
-                                <div class="form-group">
-                                    <input type="text" name="name" placeholder="Your name" required="">
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" name="email" placeholder="Your Email" required="">
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" name="phone" placeholder="Phone" required="">
-                                </div>
-                                <div class="form-group">
-                                    <textarea name="message" placeholder="Message"></textarea>
-                                </div>
-                                <div class="form-group message-btn">
-                                    <button type="submit" class="theme-btn btn-one">Send Message</button>
-                                </div>
-                            </form>
-                        </div>
+                       <form action="enquiry-details.php" method="post" class="default-form">
+    <input type="hidden" name="property_id" value="<?php echo $prop_id; ?>">
+    <div class="form-group">
+        <input type="text" name="name" placeholder="Your name" required="">
+    </div>
+    <div class="form-group">
+        <input type="email" name="email" placeholder="Your Email" required="">
+    </div>
+    <div class="form-group">
+        <input type="text" name="phone" placeholder="Phone" required="">
+    </div>
+    <div class="form-group">
+        <textarea name="message" placeholder="Message"></textarea>
+    </div>
+    <div class="form-group message-btn">
+        <button type="submit" class="theme-btn btn-one">Send Message</button>
+    </div>
+</form>
+
                     </div>
                     <div class="calculator-widget sidebar-widget">
 
@@ -1108,6 +1108,10 @@ $conn->close();
 
 <!-- main-js -->
 <script src="assets/js/script.js"></script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
 </body><!-- End of .page_wrapper -->
 

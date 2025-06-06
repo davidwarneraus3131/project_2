@@ -15,13 +15,22 @@
         })
     }
 
-    if ($(".switch_btn_one").length) {
-	    $(".search__toggler").on("click", function(){
-	    	$(".search-field .switch_btn_one").addClass("active");
-	    })     
-	    $(".switch_btn_one .close-btn").on("click", function(){
-	    	$(".search-field .switch_btn_one").removeClass("active");
-	    }) 
+    // if ($(".switch_btn_one").length) {
+	//     $(".search__toggler").on("click", function(){
+	//     	$(".search-field .switch_btn_one").addClass("active");
+	//     })     
+	//     $(".switch_btn_one .close-btn").on("click", function(){
+	//     	$(".search-field .switch_btn_one").removeClass("active");
+	//     }) 
+
+		if ($(".switch_btn_one").length) {
+    $(".search__toggler").on("click", function () {
+        $(".search-field .switch_btn_one").toggleClass("active");
+    });
+
+    $(".switch_btn_one .close-btn").on("click", function () {
+        $(".search-field .switch_btn_one").removeClass("active");
+    });
     }
 	
 	//Update Header Style and Scroll to Top
