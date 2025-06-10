@@ -566,7 +566,7 @@ if ($result->num_rows > 0) {
                                     <div class="box clearfix">
                                         <div class="text pull-left">
                                             <!-- <h6>Western Reserve University <span>(2.10 km)</span></h6> -->
-                                            <h6><?php echo $nearbyscl_1 ?> <span>(2.10 km)</span></h6>
+                                            <h6><?php echo $nearbyscl_1 ?> <span></span></h6>
                                         </div>
                                         <!-- <ul class="rating pull-right clearfix">
                                             <li><i class="icon-39"></i></li>
@@ -700,6 +700,8 @@ if ($result->num_rows > 0) {
                         </div>
                        <form action="enquiry-details.php" method="post" class="default-form">
     <input type="hidden" name="property_id" value="<?php echo $prop_id; ?>">
+    <input type="hidden" name="agent_id" value="<?php echo $agent_id; ?>">
+    <input type="hidden" name="property_name" value="<?php echo $property_name; ?>">
     <div class="form-group">
         <input type="text" name="name" placeholder="Your name" required="">
     </div>

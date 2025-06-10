@@ -168,6 +168,35 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest'; // Default to 'g
     </div>
 </li>
 <?php endif; ?>
+<?php if ($role === 'admin' || $role === 'agent') : ?>
+<!-- PROPERTIES MENU (VISIBLE TO BOTH ADMIN & AGENT) -->
+<li class="nav-item">
+    <a data-bs-toggle="collapse" href="#formsenqiry">
+        <i class="far fa-paper-plane"></i>
+        <p>Enquiry </p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse" id="formsenqiry">
+        <ul class="nav nav-collapse">
+            <li>
+                <a href="../enquiry/enquiry_list.php">
+                    <span class="sub-item">Enquiry List</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="../pending_property/pending_property.php">
+                    <span class="sub-item">Pending Property List</span>
+                </a>
+            </li>
+            <li>
+                <a href="../approved_property/approved_property_list.php">
+                    <span class="sub-item">Approved Property List</span>
+                </a>
+            </li> -->
+        </ul>
+    </div>
+</li>
+<?php endif; ?>
 
 <?php if ($role === 'admin') : ?>
 
