@@ -5,63 +5,104 @@ include("./database/db.php");
 $message = "";
 $message_type = "";
 
+// 🔐 CSRF Protection (generate token)
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// 🛡️ Limit login attempts
+// Initialize login attempt tracking
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['last_login_attempt'] = time();
+}
+
+// Lockout check
+if ($_SESSION['login_attempts'] >= 5) {
+    $timePassed = time() - $_SESSION['last_login_attempt'];
+
+    if ($timePassed < 300) { // 300 seconds = 5 minutes
+        $remaining = 300 - $timePassed;
+        die("Too many failed attempts. Try again after " . ceil($remaining / 60) . " minutes.");
+    } else {
+        // Reset after 5 minutes
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['last_login_attempt'] = time();
+    }
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    // ✅ CSRF Check
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $message = "Security token mismatch!";
+        $message_type = "error";
+    } else {
+        // 🧩 Sanitize input
+        $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+        $password = trim($_POST['password']);
 
-    // Query to check user credentials
-    $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
-    $user = mysqli_fetch_assoc($result);
+        // 🔐 Use Prepared Statement
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
 
-    if ($user) {
-        if ($user['is_verified'] == 0) {
-            $message = "Your account is not verified yet. Please wait for admin approval.";
-            $message_type = "warning";
-        } elseif ($user['status'] == 'inactive') {
-            $message = "You are unauthorized to log in!";
-            $message_type = "unauthorized";
-        } elseif (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['user_img'] = $user['user_img'];
+        if ($user) {
+            if ($user['is_verified'] == 0) {
+                $message = "Your account is not verified yet. Please wait for admin approval.";
+                $message_type = "warning";
+            } elseif ($user['status'] == 'inactive') {
+                $message = "You are unauthorized to log in!";
+                $message_type = "unauthorized";
+            } elseif (password_verify($password, $user['password'])) {
+                // ✅ Session hardening
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['user_img'] = $user['user_img'];
 
-            $message = "Login successful! Redirecting...";
-            $message_type = "success";
+                $_SESSION['login_attempts'] = 0; // reset on success
 
-            // Handle role-based redirection
-            $redirectUrl = "index.php"; // Default for general users
-            if ($user['role'] == 'admin') {
-                $redirectUrl = "admin/dashboard.php";
-            } elseif ($user['role'] == 'agent') {
-                $redirectUrl = "admin/property/property.php";
-            }elseif ($user['role'] == 'user') {
+                $message = "Login successful! Redirecting...";
+                $message_type = "success";
+
+                // 🔁 Redirect based on role
                 $redirectUrl = "index.php";
-            }
+                if ($user['role'] == 'admin') {
+                    $redirectUrl = "admin/dashboard.php";
+                } elseif ($user['role'] == 'agent') {
+                    $redirectUrl = "admin/property/property.php";
+                }
 
-            echo "<script>
-                    setTimeout(function() {
-                        window.location.href = '$redirectUrl';
-                    }, 2000);
-                  </script>";
+                echo "<script>
+                        setTimeout(function() {
+                            window.location.href = '$redirectUrl';
+                        }, 2000);
+                      </script>";
+            } else {
+                $message = "Invalid credentials!";
+                $message_type = "error";
+                $_SESSION['login_attempts']++;
+            }
         } else {
             $message = "Invalid credentials!";
             $message_type = "error";
+            $_SESSION['login_attempts']++;
         }
-    } else {
-        $message = "Invalid credentials!";
-        $message_type = "error";
+
+        $stmt->close();
     }
 }
 ?>
 
 <?php include('./includes/header.php'); ?>
 
-<!--Page Title-->
-<section class="page-title-two bg-color-1 centred">
-    <!-- Page title content -->
-</section>
+<!-- Page Title -->
+<section class="page-title-two bg-color-1 centred"></section>
 
 <!-- Register Section -->
 <section class="ragister-section centred sec-pad">
@@ -86,11 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <form action="" method="post" class="default-form">
                                     <div class="form-group">
                                         <label>Email address</label>
-                                        <input type="email" name="email" required="">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <input type="email" name="email" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Password</label>
-                                        <input type="password" name="password" required="">
+                                        <input type="password" name="password" required>
                                     </div>
                                     <div class="form-group message-btn">
                                         <button type="submit" class="theme-btn btn-one">Sign in</button>
@@ -106,18 +148,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <!-- User Tab -->
+
                         <div class="tab" id="tab-2">
                             <div class="inner-box">
                                 <h4>Sign in</h4>
                                 <form action="" method="post" class="default-form">
                                     <div class="form-group">
                                         <label>Email address</label>
-                                        <input type="email" name="email" required="">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <input type="email" name="email" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Password</label>
-                                        <input type="password" name="password" required="">
+                                        <input type="password" name="password" required>
                                     </div>
                                     <div class="form-group message-btn">
                                         <button type="submit" class="theme-btn btn-one">Sign in</button>
@@ -133,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <?php endif; ?>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

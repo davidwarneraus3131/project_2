@@ -8,6 +8,17 @@ include("./database/db.php");
 
 
 ?>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Optional: Leaflet Geocoder (for autocomplete) -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
 <!-- In HEAD -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -262,19 +273,21 @@ if ($result->num_rows > 0) {
                                             <div class="col-lg-4 col-md-6 col-sm-12 column">
                                                 <div class="form-group">
                                                     <label>Location</label>
-                                                    <div class="select-box">
-                                                        <i class="far fa-compass"></i>
-                                                        <select class="wide" name="location">
-                                                            <option value="">Input location</option>
-                                                            <option value="New York" <?php echo (isset($_GET['location']) && $_GET['location'] == "New York") ? 'selected' : ''; ?>>New York</option>
-                                                            <option value="California" <?php echo (isset($_GET['location']) && $_GET['location'] == "California") ? 'selected' : ''; ?>>
-                                                                California</option>
-                                                            <option value="London" <?php echo (isset($_GET['location']) && $_GET['location'] == "London") ? 'selected' : ''; ?>>
-                                                                London</option>
-                                                            <option value="Mexico" <?php echo (isset($_GET['location']) && $_GET['location'] == "Mexico") ? 'selected' : ''; ?>>
-                                                                Mexico</option>
-                                                        </select>
+                                                    <div class="field-input">
+                                                        <div class="wide">
+                                                            <!-- <i class="far fa-compass"></i> -->
+                                                            <input type="text" id="locationInput" name="location"
+                                                                placeholder="Enter location..."
+                                                                value="<?php echo isset($_GET['location']) ? $_GET['location'] : ''; ?>"
+                                                                autocomplete="off">
+                                                            <div id="locationSuggestions" class="autocomplete-box">
+                                                            </div>
+                                                        </div>
+
+
+                                                        
                                                     </div>
+
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-12 column">
@@ -301,16 +314,16 @@ if ($result->num_rows > 0) {
                                     </form>
                                 </div>
                                 <div class="switch_btn_one ">
-                                    
+
                                     <button
                                         class="nav-btn nav-toggler navSidebar-button clearfix search__toggler">Advanced
                                         Search <i class="fas fa-angle-down"></i></button>
-                                        
+
                                     <div class="advanced-search">
                                         <div class="close-btn">
                                             <!-- <a href="#" class="close-side-widget"><i class="fas fa-angle-up"></i></a> -->
                                         </div>
-                                       
+
 
 
                                         <form method="GET" action="property-list.php">
@@ -987,7 +1000,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 
 <!-- featured properties -->
- <?php
+<?php
 $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
                users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
         FROM properties 
@@ -1145,7 +1158,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="auto-container">
             <div class="sec-title">
                 <h5>Premium </h5>
-                <h2>Premium  Properties</h2>
+                <h2>Premium Properties</h2>
             </div>
 
             <!-- Swiper Slider Start -->
@@ -1172,11 +1185,11 @@ if ($result && mysqli_num_rows($result) > 0) {
                                     <div class="inner-box align-items-center">
                                         <div class="image-box">
                                             <figure class="image">
-                                                
-                                                    <img src="assets/images/property/<?php echo $property_img ?>" alt="">
-                                               
+
+                                                <img src="assets/images/property/<?php echo $property_img ?>" alt="">
+
                                             </figure>
-                                            
+
                                         </div>
                                         <div class="content-box">
                                             <ul class="post-info clearfix">
@@ -1871,3 +1884,49 @@ $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest';
         z-index: 2;
     }
 </style>
+
+
+
+<!-- for  autocomplete search -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("locationInput");
+        const suggestions = document.getElementById("locationSuggestions");
+
+        input.addEventListener("input", function () {
+            const query = input.value;
+            if (query.length < 3) {
+                suggestions.innerHTML = '';
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`)
+                .then(res => res.json())
+                .then(data => {
+                    suggestions.innerHTML = '';
+                    data.forEach(place => {
+                        const div = document.createElement("div");
+                        div.textContent = place.display_name;
+                        div.addEventListener("click", () => {
+                            input.value = place.display_name;
+                            suggestions.innerHTML = '';
+                            // Optional: store lat/lon if needed
+                            // console.log("Lat:", place.lat, "Lon:", place.lon);
+                        });
+                        suggestions.appendChild(div);
+                    });
+                })
+                .catch(err => console.error(err));
+        });
+
+        // Hide suggestions if user clicks outside
+        document.addEventListener("click", function (e) {
+            if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.innerHTML = '';
+            }
+        });
+    });
+
+
+
+</script>

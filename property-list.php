@@ -1,8 +1,21 @@
+
 <?php
+// echo "Floor: " . $_GET['floor'];
+// exit;
 session_start();
 include("./includes/header.php");
 include("./database/db.php");
+
+
 ?>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
 
 <!-- page-content end -->
 <div class="page-content clearfix">
@@ -242,10 +255,6 @@ include("./database/db.php");
                                 <div class="tab active-tab" id="tab-1">
                                     <div class="inner-box">
                                         <div class="top-search">
-
-
-
-
 
                                             <form method="GET" action="" class="search-form">
                                                 <div class="row clearfix">
@@ -544,166 +553,129 @@ include("./database/db.php");
 
         <?php
 
-        // Set the number of records per page
-        $limit = 6;
+// Set the number of records per page
+$limit = 6;
 
-        // Get the current page number from URL, default is 1
-        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        if ($page < 1)
-            $page = 1;
+// Get the current page number from URL, default is 1
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $limit;
 
-        // Calculate the starting record for the query
-        $offset = ($page - 1) * $limit;
+// Sanitize and validate GET input helper
+function get_param($key, $default = '', $sanitize = 'string') {
+    $value = $_GET[$key] ?? $default;
+    switch ($sanitize) {
+        case 'int': return filter_var($value, FILTER_VALIDATE_INT) ?: $default;
+        case 'float': return filter_var($value, FILTER_VALIDATE_FLOAT) ?: $default;
+        case 'string': return htmlspecialchars(trim($value));
+        case 'array': return is_array($value) ? array_map('htmlspecialchars', $value) : [];
+        default: return $default;
+    }
+}
 
-        // Get total records count
-        $total_query = "SELECT COUNT(*) AS total FROM properties";
-        $total_result = mysqli_query($conn, $total_query);
-        $total_row = mysqli_fetch_assoc($total_result);
-        $total_records = $total_row['total'] ?? 0;
+$sort_options = [
+    '1' => 'ORDER BY properties.created_at DESC',
+    '2' => 'ORDER BY properties.rating DESC',
+    '3' => 'ORDER BY properties.price ASC',
+    '4' => 'ORDER BY properties.views DESC'
+];
+$sort_key = get_param('sort', '1', 'string');
+$sort_order = $sort_options[$sort_key] ?? $sort_options['1'];
 
-        // Calculate total pages
-        $total_pages = ($total_records > 0) ? ceil($total_records / $limit) : 1;
+// Filters
+$search = get_param('search-field');
+$location = get_param('location');
+$property_type = get_param('property-type');
+$distance = get_param('distance', 0, 'int');
+$bedrooms = get_param('bedrooms', 0, 'int');
+$floor = get_param('floor', 0, 'int');
+$bathrooms = get_param('bathrooms', 0, 'int');
+$agency = get_param('agency');
+$status = get_param('status');
+$min_price = get_param('min_price', 0, 'int');
+$max_price = get_param('max_price', 0, 'int');
+$min_sqft = get_param('min_sqft', 0, 'int');
+$max_sqft = get_param('max_sqft', 0, 'int');
+$features = get_param('features', [], 'array');
 
-        // Default sorting order
-        $sort_order = "ORDER BY properties.created_at DESC"; // Default: Newest
-        
-        // Check if a sorting option is selected
-        if (isset($_GET['sort'])) {
-            switch ($_GET['sort']) {
-                case '1':
-                    $sort_order = "ORDER BY properties.created_at DESC"; // New Arrival
-                    break;
-                case '2':
-                    $sort_order = "ORDER BY properties.rating DESC"; // Top Rated
-                    break;
-                case '3':
-                    $sort_order = "ORDER BY properties.price ASC"; // Offer Place (Lowest Price)
-                    break;
-                case '4':
-                    $sort_order = "ORDER BY properties.views DESC"; // Most Place (Most Views)
-                    break;
-            }
-        }
+$conditions = ["1=1"];
 
-        // Initialize filter conditions
-        $search_condition = "";
-        $location_condition = "";
-        $type_condition = "";
-        $feature_conditions = "";
+if (!empty($search)) {
+    $safe_search = mysqli_real_escape_string($conn, $search);
+    $conditions[] = "(properties.property_name LIKE '%$safe_search%' OR properties.description LIKE '%$safe_search%')";
+}
 
+if (!empty($location)) {
+    $safe_location = mysqli_real_escape_string($conn, $location);
+    $conditions[] = "'$safe_location' LIKE CONCAT('%', properties.location, '%')";
+}
 
-        // Check if search query is provided
-        if (isset($_GET['search-field']) && !empty($_GET['search-field'])) {
-            $search_query = mysqli_real_escape_string($conn, $_GET['search-field']);
-            $search_condition = "AND (properties.property_name LIKE '%$search_query%' OR properties.description LIKE '%$search_query%')";
-        }
+if (!empty($property_type)) {
+    $safe_property_type = mysqli_real_escape_string($conn, $property_type);
+    $conditions[] = "properties.property_type = '$safe_property_type'";
+}
 
-        if (isset($_GET['location']) && !empty($_GET['location'])) {
-            $location = mysqli_real_escape_string($conn, $_GET['location']);
-            $location_condition = "AND properties.location = '$location'";
-        }
+if ($distance > 0) $conditions[] = "properties.distance <= $distance";
+if ($bedrooms > 0) $conditions[] = "properties.beds = $bedrooms";
+if ($floor > 0) $conditions[] = "properties.total_floors = $floor";
+if ($bathrooms > 0) $conditions[] = "properties.baths = $bathrooms";
 
-        if (isset($_GET['property-type']) && !empty($_GET['property-type'])) {
-            $property_type = mysqli_real_escape_string($conn, $_GET['property-type']);
-            $type_condition = "AND properties.property_type = '$property_type'";
-        }
+if (!empty($agency)) {
+    $safe_agency = mysqli_real_escape_string($conn, $agency);
+    $conditions[] = "properties.agent_id = '$safe_agency'";
+}
 
-        // Initialize the filter conditions for advanced search
-        
-        $distance_condition = "";
-        $bedroom_condition = "";
-        $floor_condition = "";
-        $bath_condition = "";
-        $agency_condition = "";
-        $price_condition = "";
-        $area_condition = "";
-        $property_type_condition = "";
+if (!empty($status)) {
+    $safe_status = mysqli_real_escape_string($conn, $status);
+    $conditions[] = "properties.property_now_status = '$safe_status'";
+}
 
-        if (isset($_GET['distance']) && !empty($_GET['distance'])) {
-            $distance = intval($_GET['distance']);
-            $distance_condition = "AND properties.distance <= $distance";
-        }
+if ($min_price > 0 && $max_price > 0) {
+    $conditions[] = "properties.price BETWEEN $min_price AND $max_price";
+}
 
-        if (isset($_GET['bedrooms']) && !empty($_GET['bedrooms'])) {
-            $bedrooms = intval($_GET['bedrooms']);
-            $bedroom_condition = "AND properties.beds = '$bedrooms'";
-        }
+if ($min_sqft > 0 && $max_sqft > 0) {
+    $conditions[] = "properties.square_feet BETWEEN $min_sqft AND $max_sqft";
+}
 
-        if (isset($_GET['floor']) && !empty($_GET['floor'])) {
-            $floor = intval($_GET['floor']);
-            $floor_condition = "AND properties.floor = $floor";
-        }
+$feature_map = [
+    'furnished' => 'properties.furnished',
+    'semi_furnished' => 'properties.semi_furnished',
+    'ac' => 'properties.ac',
+    'balcony' => 'properties.balcony',
+    'refrigerator' => 'properties.refrigerator'
+];
 
-        if (isset($_GET['bathrooms']) && !empty($_GET['bathrooms'])) {
-            $bath = intval(value: $_GET['bathrooms']);
-            $bath_condition = "AND properties.baths = $bath";
-        }
+foreach ($features as $feature) {
+    if (array_key_exists($feature, $feature_map)) {
+        $conditions[] = $feature_map[$feature] . ' = 1';
+    }
+}
 
-        if (isset($_GET['agency']) && !empty($_GET['agency'])) {
-            $agency = mysqli_real_escape_string($conn, $_GET['agency']);
-            $agency_condition = "AND properties.agent_id = '$agency'";
+$where_clause = implode(' AND ', $conditions);
 
-        }
-
-        if (isset($_GET['status']) && !empty($_GET['status'])) {
-            $status = mysqli_real_escape_string($conn, $_GET['status']);
-            $property_type_condition = "AND properties.property_now_status  = '$status'";
-        }
-
-        // Price Range Condition
-        if (isset($_GET['min_price']) && isset($_GET['max_price']) && !empty($_GET['min_price']) && !empty($_GET['max_price'])) {
-            $min_price = intval($_GET['min_price']);
-            $max_price = intval($_GET['max_price']);
-            $price_condition = "AND properties.price BETWEEN $min_price AND $max_price";
-        }
-
-        // Area (Sq Ft) Condition
-        if (isset($_GET['min_sqft']) && isset($_GET['max_sqft']) && !empty($_GET['min_sqft']) && !empty($_GET['max_sqft'])) {
-            $min_sqft = intval($_GET['min_sqft']);
-            $max_sqft = intval($_GET['max_sqft']);
-            $area_condition = "AND properties.square_feet BETWEEN $min_sqft AND $max_sqft";
-        }
-
-        // Initialize the feature conditions
-        
-        if (isset($_GET['features']) && !empty($_GET['features'])) {
-            $features = $_GET['features'];
-
-            // Add conditions for each feature
-            if (in_array('furnished', $features)) {
-                $feature_conditions .= " AND properties.furnished = 1";
-            }
-            if (in_array('semi_furnished', $features)) {
-                $feature_conditions .= " AND properties.semi_furnished = 1";
-            }
-            if (in_array('ac', $features)) {
-                $feature_conditions .= " AND properties.ac = 1";
-            }
-            if (in_array('balcony', $features)) {
-                $feature_conditions .= " AND properties.balcony = 1";
-            }
-            if (in_array('refrigerator', $features)) {
-                $feature_conditions .= " AND properties.refrigerator = 1";
-            }
-        }
-
-        $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
+$sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
                users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
         FROM properties 
         JOIN users ON properties.agent_id = users.id 
-        WHERE 1=1 $search_condition $location_condition $type_condition 
-              $distance_condition $bedroom_condition $floor_condition $bath_condition 
-              $agency_condition $price_condition $area_condition $property_type_condition $feature_conditions
+        WHERE $where_clause 
         $sort_order 
         LIMIT $limit OFFSET $offset";
 
-        //  echo $sql;
-        
-        $result = mysqli_query($conn, $sql);
-        // Showing dynamic results text
-        $start_item = ($page - 1) * $limit + 1;
-        $end_item = min($start_item + $limit - 1, $total_records);
-        ?>
+$result = mysqli_query($conn, $sql);
+
+// Count total records for pagination
+$total_query = "SELECT COUNT(*) AS total FROM properties WHERE $where_clause";
+$total_result = mysqli_query($conn, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_records = $total_row['total'] ?? 0;
+$total_pages = ($total_records > 0) ? ceil($total_records / $limit) : 1;
+
+$start_item = ($page - 1) * $limit + 1;
+$end_item = min($start_item + $limit - 1, $total_records);
+?>
+
+
+
 
         <!-- deals-style-two -->
         <section class="deals-style-two">
@@ -820,104 +792,619 @@ include("./database/db.php");
                     }
                     ?>
                     <!-- Grid Layout for Properties -->
-                    <div class="deals-grid-content">
-                        <div class="row clearfix">
-                            <?php
-                            // Set the number of records per page
-                            
+                  <div id="map-container" style="margin: 20px 0; position: relative;">
+    <div id="map" style="height: 600px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
+    <div id="map-controls" style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        <button id="theme-toggle" class="map-control-btn" title="Change map theme">
+            <i class="fas fa-palette"></i>
+        </button>
+        <button id="locate-me" class="map-control-btn" title="Find my location">
+            <i class="fas fa-location-arrow"></i>
+        </button>
+    </div>
+</div>
 
-                            // Fetch records with pagination
-                            $sql = "SELECT properties.*, users.name, users.email, users.user_img, users.phone, users.occupation, 
-               users.facebook_link, users.twitter_link, users.linkedin_link, users.user_description 
-        FROM properties 
-        JOIN users ON properties.agent_id = users.id 
-        LIMIT $limit OFFSET $offset";
+<!-- Include Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-                            $result = mysqli_query($conn, $sql);
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-                            // Showing dynamic results text
-                            $start_item = ($page - 1) * $limit + 1;
-                            $end_item = min($start_item + $limit - 1, $total_records);
+<script>
+// Premium Map Themes
+const mapThemes = {
+    'standard': {
+        name: 'Standard',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    },
+    'dark': {
+        name: 'Dark',
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19
+    },
+    'satellite': {
+        name: 'Satellite',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19
+    },
+    'light': {
+        name: 'Light',
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19
+    },
+    'terrain': {
+        name: 'Terrain',
+        url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+        maxZoom: 17
+    }
+};
 
-                            $result = mysqli_query($conn, $sql);
-                            if ($result && mysqli_num_rows($result) > 0) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    $property_name = $row['property_name'];
-                                    $price = $row['price'];
-                                    $description = $row['description'];
-                                    $agent_name = $row['name'];
-                                    $agent_img = $row['user_img'];
-                                    $property_img = $row['property_img1'];
-                                    $beds = $row['beds'];
-                                    $baths = $row['baths'];
-                                    $square_feet = $row['square_feet'];
-                                    ?>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 feature-block">
-                                        <div class="feature-block-one">
-                                            <div class="inner-box">
-                                                <div class="image-box">
-                                                      <figure class="image watermark-container">
-    <img src="assets/images/property/<?php echo $property_img ?>" alt="" class="property-img">
-    <img src="assets/images/logo.png" class="watermark" alt="Watermark">
-</figure>
+// Initialize the map with responsive view
+const map = L.map('map', {
+    center: [20.5937, 78.9629],
+    zoom: 4,
+    zoomControl: false,
+    scrollWheelZoom: true
+});
 
-                                                    <?php if ($row['batch'] == 1): ?>
-                                                        <div class="batch"><i class="icon-11"></i></div>
-                                                    <?php endif; ?>
+// Add initial tile layer
+let currentTheme = 'standard';
+L.tileLayer(mapThemes[currentTheme].url, {
+    attribution: mapThemes[currentTheme].attribution,
+    maxZoom: mapThemes[currentTheme].maxZoom
+}).addTo(map);
 
+// Custom marker icons for different property types
+const propertyIcons = {
+    'Apartment': L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }),
+    'Villa': L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }),
+    'House': L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }),
+    'default': L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    })
+};
 
-                                                    <?php if ($row['featured'] == 1): ?>
-                                                        <span class="category">Featured</span>
-                                                    <?php endif; ?>
-
-                                                </div>
-                                                <div class="lower-content">
-                                                    <div class="author-info clearfix">
-                                                        <div class="author pull-left">
-                                                            <figure class="author-thumb"><img
-                                                                    src="assets/images/users/<?php echo $agent_img ?>" alt="">
-                                                            </figure>
-                                                            <h6><?php echo $agent_name; ?></h6>
-                                                        </div>
-                                                        <div class="buy-btn pull-right"><a
-                                                                href="property-details.php?id=<?php echo $row['id']; ?>">For
-                                                                Buy</a></div>
-                                                    </div>
-                                                    <div class="title-text">
-                                                        <h4><a
-                                                                href="property-details.php?id=<?php echo $row['id']; ?>"><?php echo $property_name; ?></a>
-                                                        </h4>
-                                                    </div>
-                                                    <div class="price-box clearfix">
-                                                        <div class="price-info pull-left">
-                                                            <h6>Start From</h6>
-                                                            <h4>₹<?php echo number_format($price, 2); ?></h4>
-                                                        </div>
-                                                    </div>
-                                                    <p><?php echo $description; ?></p>
-                                                    <ul class="more-details clearfix">
-                                                        <li><i class="icon-14"></i><?php echo $beds; ?> Beds</li>
-                                                        <li><i class="icon-15"></i><?php echo $baths; ?> Baths</li>
-                                                        <li><i class="icon-16"></i><?php echo $square_feet; ?> Sq Ft</li>
-                                                    </ul>
-                                             <div class="btn-box">
-                                                        
-                                                    <?php if (isset($_SESSION['user_id'])) { ?>
-                                           <a href="property-details.php?id=<?php echo $row['id']; ?>" class="theme-btn btn-two">See Details</a>
-                                       <?php } else { ?>
-                                           <a href="#" class="theme-btn btn-two" onclick="showLoginAlert()">See Details</a>
-                                       <?php } ?>                                                  
-                                                        </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php
-                                }
-                            }
-                            ?>
+// Function to fetch and display properties
+function loadPropertiesOnMap() {
+    fetch('get_properties.php')
+        .then(response => response.json())
+        .then(properties => {
+            const markers = L.featureGroup();
+            
+            properties.forEach(property => {
+                const icon = propertyIcons[property.property_type] || propertyIcons['default'];
+                
+                const marker = L.marker([property.latitude, property.longitude], {
+                    icon: icon,
+                    riseOnHover: true
+                }).addTo(map);
+                
+                // Custom popup content with more details
+                marker.bindPopup(`
+                    <div class="map-popup">
+                        <div class="popup-header">
+                            <h4>${property.property_name}</h4>
+                            <span class="property-type ${property.property_type.toLowerCase()}">${property.property_type}</span>
+                        </div>
+                        <div class="popup-image-container">
+                            <img src="${property.property_img1 || 'https://via.placeholder.com/300x200?text=Property'}" 
+                                 alt="${property.property_name}" 
+                                 class="popup-image">
+                            <div class="price-badge">₹${property.price.toLocaleString('en-IN')}</div>
+                        </div>
+                        <div class="popup-details">
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${property.location}</span>
+                            </div>
+                            <div class="specs">
+                                <div class="spec-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>${property.beds} Beds</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-bath"></i>
+                                    <span>${property.baths} Baths</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-vector-square"></i>
+                                    <span>${property.square_feet} sq.ft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="popup-footer">
+                            <a href="property-details.php?id=${property.id}" class="popup-link">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
+                `, {
+                    maxWidth: 300,
+                    minWidth: 250,
+                    className: 'custom-popup'
+                });
+                
+                markers.addLayer(marker);
+            });
+            
+            // Fit map to show all markers if there are any
+            if (properties.length > 0) {
+                map.fitBounds(markers.getBounds().pad(0.2));
+            }
+        })
+        .catch(error => console.error('Error loading properties:', error));
+}
+
+// Theme toggle functionality
+document.getElementById('theme-toggle').addEventListener('click', function() {
+    const themeKeys = Object.keys(mapThemes);
+    const currentIndex = themeKeys.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % themeKeys.length;
+    currentTheme = themeKeys[nextIndex];
+    
+    // Remove existing tiles
+    map.eachLayer(layer => {
+        if (layer instanceof L.TileLayer) {
+            map.removeLayer(layer);
+        }
+    });
+    
+    // Add new tiles
+    L.tileLayer(mapThemes[currentTheme].url, {
+        attribution: mapThemes[currentTheme].attribution,
+        maxZoom: mapThemes[currentTheme].maxZoom
+    }).addTo(map);
+    
+    // Show theme name notification
+    L.DomUtil.get('theme-toggle').innerHTML = `<i class="fas fa-palette"></i> ${mapThemes[currentTheme].name}`;
+    setTimeout(() => {
+        L.DomUtil.get('theme-toggle').innerHTML = '<i class="fas fa-palette"></i>';
+    }, 2000);
+});
+
+// Locate me functionality
+// Improved Locate Me functionality
+document.getElementById('locate-me').addEventListener('click', function() {
+    const locateBtn = document.getElementById('locate-me');
+    
+    // Show loading state
+    locateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    locateBtn.style.pointerEvents = 'none';
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                // Success - reset button and center map
+                locateBtn.innerHTML = '<i class="fas fa-location-arrow"></i>';
+                locateBtn.style.pointerEvents = 'auto';
+                
+                // Remove any existing user location marker
+                map.eachLayer(layer => {
+                    if (layer.options.className === 'user-location-marker') {
+                        map.removeLayer(layer);
+                    }
+                });
+                
+                // Fly to user location
+                map.flyTo([position.coords.latitude, position.coords.longitude], 13);
+                
+                // Add user location marker
+                const userMarker = L.marker([position.coords.latitude, position.coords.longitude], {
+                    icon: L.divIcon({
+                        className: 'user-location-marker',
+                        html: '<div class="pulse-dot"></div><div class="pulse-ring"></div>',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    }),
+                    zIndexOffset: 1000
+                }).addTo(map);
+                
+                // Show temporary popup
+                userMarker.bindPopup("You are here").openPopup();
+                setTimeout(() => userMarker.closePopup(), 3000);
+            },
+            error => {
+                // Error - reset button and show appropriate message
+                locateBtn.innerHTML = '<i class="fas fa-location-arrow"></i>';
+                locateBtn.style.pointerEvents = 'auto';
+                
+                let errorMessage = "Unable to retrieve your location";
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Location access was denied. Please enable permissions in your browser settings.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "The request to get your location timed out.";
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        errorMessage = "An unknown error occurred while getting your location.";
+                        break;
+                }
+                
+                // Show error message in a nice popup instead of alert
+                const errorPopup = L.popup()
+                    .setLatLng(map.getCenter())
+                    .setContent(`
+                        <div class="error-popup">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>${errorMessage}</div>
+                            ${error.code === error.PERMISSION_DENIED ? 
+                              '<a href="#" onclick="showLocationHelp()" style="font-size:12px; margin-top:8px; display:inline-block;">How to enable location access</a>' : ''}
+                        </div>
+                    `)
+                    .openOn(map);
+                
+                // Auto-close after 5 seconds
+                setTimeout(() => map.closePopup(errorPopup), 5000);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000, // 10 seconds
+                maximumAge: 0
+            }
+        );
+    } else {
+        // Browser doesn't support geolocation
+        locateBtn.innerHTML = '<i class="fas fa-location-arrow"></i>';
+        locateBtn.style.pointerEvents = 'auto';
+        
+        L.popup()
+            .setLatLng(map.getCenter())
+            .setContent(`
+                <div class="error-popup">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>Geolocation is not supported by your browser.</div>
+                </div>
+            `)
+            .openOn(map);
+    }
+});
+
+// Function to show help for enabling location (add this to your script)
+function showLocationHelp() {
+    const helpPopup = L.popup()
+        .setLatLng(map.getCenter())
+        .setContent(`
+            <div class="help-popup">
+                <h4>How to enable location access:</h4>
+                <ul>
+                    <li><strong>Chrome/Firefox/Edge:</strong> Click the lock/padlock icon in the address bar > Site settings > Location > Allow</li>
+                    <li><strong>Safari:</strong> Preferences > Websites > Location > Set to "Allow" for this site</li>
+                    <li><strong>Mobile:</strong> Check your device settings > Location > Enable for browser</li>
+                </ul>
+                <button onclick="map.closePopup()" style="margin-top:10px;">Got it</button>
+            </div>
+        `)
+        .openOn(map);
+}
+
+
+// Load properties when page is ready
+document.addEventListener('DOMContentLoaded', function() {
+    loadPropertiesOnMap();
+    
+    // Make map responsive when window resizes
+    window.addEventListener('resize', function() {
+        map.invalidateSize();
+    });
+});
+
+// Add custom CSS for the map elements
+const style = document.createElement('style');
+style.textContent = `
+
+ .user-location-marker {
+        background: transparent;
+        border: none;
+    }
+    
+    .pulse-dot {
+        width: 16px;
+        height: 16px;
+        background: #4285F4;
+        border-radius: 50%;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+        animation: pulse 2s infinite;
+    }
+    
+    .pulse-ring {
+        width: 32px;
+        height: 32px;
+        background: rgba(66, 133, 244, 0.3);
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+        }
+    }
+    
+    /* Error popup styles */
+    .error-popup {
+        padding: 10px;
+        text-align: center;
+    }
+    
+    .error-popup i {
+        color: #F4B400;
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+    
+    .error-popup div {
+        margin-bottom: 5px;
+    }
+    
+    .help-popup {
+        padding: 10px;
+        max-width: 250px;
+    }
+    
+    .help-popup h4 {
+        margin-top: 0;
+        font-size: 14px;
+    }
+    
+    .help-popup ul {
+        padding-left: 20px;
+        font-size: 12px;
+        text-align: left;
+    }
+    
+    .help-popup li {
+        margin-bottom: 8px;
+    }
+    
+    .help-popup button {
+        background: #4285F4;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    /* Map controls */
+    .map-control-btn {
+        background: white;
+        border: none;
+        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        transition: all 0.2s;
+    }
+    
+    .map-control-btn:hover {
+        background: #f8f9fa;
+        color: #0066cc;
+        transform: scale(1.05);
+    }
+    
+    /* Custom popup styles */
+    .custom-popup .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    .map-popup {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    
+    .popup-header {
+        padding: 12px 15px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .popup-header h4 {
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+        font-weight: 600;
+    }
+    
+    .property-type {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-left: 8px;
+    }
+    
+    .property-type.apartment {
+        background: #4285F4;
+        color: white;
+    }
+    
+    .property-type.villa {
+        background: #FBBC05;
+        color: #333;
+    }
+    
+    .property-type.house {
+        background: #34A853;
+        color: white;
+    }
+    
+    .popup-image-container {
+        position: relative;
+        height: 150px;
+        overflow: hidden;
+    }
+    
+    .popup-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    
+    .popup-image-container:hover .popup-image {
+        transform: scale(1.05);
+    }
+    
+    .price-badge {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .popup-details {
+        padding: 12px 15px;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 13px;
+    }
+    
+    .detail-item i {
+        margin-right: 8px;
+        color: #666;
+    }
+    
+    .specs {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+    
+    .spec-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .spec-item i {
+        font-size: 16px;
+        margin-bottom: 4px;
+        color: #4285F4;
+    }
+    
+    .popup-footer {
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+    
+    .popup-link {
+        display: inline-block;
+        padding: 6px 15px;
+        background: #4285F4;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .popup-link:hover {
+        background: #3367D6;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    /* Leaflet popup tip */
+    .custom-popup .leaflet-popup-tip {
+        background: white;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        #map {
+            height: 450px !important;
+        }
+        
+        .map-popup {
+            max-width: 220px !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        #map {
+            height: 350px !important;
+        }
+        
+        #map-controls {
+            top: 10px;
+            right: 10px;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
 
 
 
@@ -1161,4 +1648,30 @@ include("./database/db.php");
         pointer-events: none;
         z-index: 2;
     }
+
+/* for  map mobile view  */
+/* Add to your main CSS file */
+#map-container {
+    margin: 20px 0;
+    padding: 0 15px;
+}
+
+@media (max-width: 768px) {
+    #map {
+        height: 350px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #map {
+        height: 300px !important;
+    }
+}
+
 </style>
+
+
+
+
+
+
